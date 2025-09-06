@@ -19,18 +19,25 @@
 #include "task.h"
 
 #include "fsl_common.h"
-#include "mcmgr.h"
+#include "fsl_mu.h"
+#include "rsc_table.h"
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 #define RPMSG_LITE_LINK_ID            (RL_PLATFORM_IMXRT1170_M7_M4_LINK_ID)
 #define RPMSG_LITE_NS_ANNOUNCE_STRING "rpmsg-openamp-demo-channel"
-#define MCMGR_USED
+#define RPMSG_LITE_SHMEM_BASE VDEV0_VRING_BASE
+#define RPMSG_LITE_MASTER_IS_LINUX
 #define APP_TASK_STACK_SIZE (256U)
 #ifndef LOCAL_EPT_ADDR
 #define LOCAL_EPT_ADDR (30U)
 #endif
 #define APP_RPMSG_READY_EVENT_DATA (1U)
+
+#define MU_RX_ISR_FLAG_Mask(x)   MU_RX_ISR_FLAG(x)
+#define MU_RX_ISR_FLAG(number)   kMU_Rx##number##FullInterruptEnable
+#define rpmsg_mu_channel_flag    MU_RX_ISR_FLAG_Mask(RPMSG_MU_CHANNEL)
 
 typedef struct the_message
 {
@@ -55,12 +62,8 @@ static char helloMsg[13];
  */
 void SystemInitHook(void)
 {
-    /* Initialize MCMGR - low level multicore management library. Call this
-       function as close to the reset entry as possible to allow CoreUp event
-       triggering. The SystemInitHook() weak function overloading is used in this
-       application. */
-    (void)MCMGR_EarlyInit();
 }
+
 static TaskHandle_t app_task_handle = NULL;
 
 static struct rpmsg_lite_instance *volatile my_rpmsg = NULL;
@@ -170,6 +173,7 @@ static void app_task(void *param)
     /* End of the example */
     for (;;)
     {
+        SDK_DelayAtLeastUs(1000000U, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
     }
 }
 
@@ -189,14 +193,29 @@ void app_create_task(void)
  */
 int main(void)
 {
+    __attribute__((unused)) uint32_t data;
+    uint32_t flags;
+
     /* Initialize standard SDK demo application pins */
     BOARD_ConfigMPU();
     BOARD_InitPins();
     SystemCoreClock = CLOCK_GetRootClockFreq(kCLOCK_Root_M4);
+    BOARD_InitDebugConsole();
 
 #ifdef MCMGR_USED
     /* Initialize MCMGR before calling its API */
     (void)MCMGR_Init();
+#else
+#if defined(FSL_FEATURE_MU_SIDE_B)
+    MU_Init(MUB);
+    for (uint32_t idx = 0U; idx < MU_RR_COUNT; idx++)
+    {
+        data = MU_ReceiveMsgNonBlocking(MUB, idx);
+    }
+    flags = MU_GetStatusFlags(MUB);
+    MU_ClearStatusFlags(MUB, flags);
+    MU_EnableInterrupts(MUB, rpmsg_mu_channel_flag);
+#endif
 #endif /* MCMGR_USED */
 
     app_create_task();

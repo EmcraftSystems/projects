@@ -25,6 +25,8 @@ uint32_t BOARD_DebugConsoleSrcFreq(void)
 {
 #if DEBUG_CONSOLE_UART_INDEX == 1
     return CLOCK_GetRootClockFreq(kCLOCK_Root_Lpuart1);
+#elif DEBUG_CONSOLE_UART_INDEX == 7
+    return CLOCK_GetRootClockFreq(kCLOCK_Root_Lpuart7);
 #elif DEBUG_CONSOLE_UART_INDEX == 12
     return CLOCK_GetRootClockFreq(kCLOCK_Root_Lpuart12);
 #else

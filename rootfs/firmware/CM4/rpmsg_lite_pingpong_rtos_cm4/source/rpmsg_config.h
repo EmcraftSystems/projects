@@ -68,7 +68,7 @@
 //! interrupts router), when disabled RPMsg-Lite manages IPC interrupts
 //! by itself.
 //! The default value is 0 (no MCMGR IPC ISR handler used).
-#define RL_USE_MCMGR_IPC_ISR_HANDLER (1)
+#define RL_USE_MCMGR_IPC_ISR_HANDLER (0)
 
 //! @def RL_USE_ENVIRONMENT_CONTEXT
 //!

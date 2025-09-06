@@ -56,6 +56,9 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
 "${ProjDirPath}/source/FreeRTOSConfig.h"
 "${ProjDirPath}/source/main_remote.c"
 "${ProjDirPath}/source/rpmsg_config.h"
+"${ProjDirPath}/source/rsc_table.c"
+"${ProjDirPath}/source/rsc_table.h"
+"${ProjDirPath}/source/remoteproc.h"
 )
 
 target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE

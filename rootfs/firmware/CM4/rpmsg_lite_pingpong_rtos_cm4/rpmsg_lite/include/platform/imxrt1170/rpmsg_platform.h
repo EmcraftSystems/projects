@@ -11,12 +11,14 @@
 
 #include <stdint.h>
 
+/* RPMSG MU channel index */
+#define RPMSG_MU_CHANNEL	1
+
 /*
- * No need to align the VRING as defined in Linux because imxrt1170 is not intended
- * to run the Linux
+ * Linux requires the ALIGN to 0x1000(4KB) instead of 0x10
  */
 #ifndef VRING_ALIGN
-#define VRING_ALIGN (0x10U)
+#define VRING_ALIGN		(0x1000U)
 #endif
 
 /* contains pool of descriptors and two circular buffers */

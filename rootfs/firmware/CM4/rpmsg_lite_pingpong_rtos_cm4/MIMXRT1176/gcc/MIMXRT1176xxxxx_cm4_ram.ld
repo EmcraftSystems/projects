@@ -29,7 +29,7 @@ ENTRY(Reset_Handler)
 
 HEAP_SIZE  = DEFINED(__heap_size__)  ? __heap_size__  : 0x0400;
 STACK_SIZE = DEFINED(__stack_size__) ? __stack_size__ : 0x400;
-RPMSG_SHMEM_SIZE = DEFINED(__use_shmem__) ? 0x2000 : 0;
+RPMSG_SHMEM_SIZE = DEFINED(__use_shmem__) ? 0x40000 : 0;
 NCACHE_HEAP_START = DEFINED(__heap_noncacheable__) ? 0x202C0000 - HEAP_SIZE : 0x20020000 - HEAP_SIZE;
 NCACHE_HEAP_SIZE  = DEFINED(__heap_noncacheable__) ? HEAP_SIZE : 0x0000;
 
@@ -42,7 +42,7 @@ MEMORY
   m_ncache              (RW)  : ORIGIN = 0x20280000, LENGTH = DEFINED(__heap_noncacheable__) ? 0x00040000 - HEAP_SIZE : 0x00040000
   m_data2               (RW)  : ORIGIN = 0x20240000, LENGTH = 0x00040000
   m_heap                (RW)  : ORIGIN = NCACHE_HEAP_START, LENGTH = HEAP_SIZE
-  rpmsg_sh_mem          (RW)  : ORIGIN = 0x202C0000, LENGTH = RPMSG_SHMEM_SIZE
+  rpmsg_sh_mem          (RW)  : ORIGIN = 0x20200000, LENGTH = RPMSG_SHMEM_SIZE
 }
 
 /* Define output sections */
@@ -72,6 +72,13 @@ SECTIONS
     KEEP(*(.isr_vector))     /* Startup code */
     . = ALIGN(4);
   } > m_interrupts
+
+  .resource_table :
+  {
+    . = ALIGN(8);
+    KEEP(*(.resource_table)) /* Resource table */
+    . = ALIGN(8);
+  } > m_text
 
   /* The program code and other data goes into internal RAM */
   .text :

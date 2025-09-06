@@ -23,7 +23,7 @@
 /*! @brief The board name */
 #define BOARD_NAME "MIMXRT1170-EVK"
 #ifndef DEBUG_CONSOLE_UART_INDEX
-#define DEBUG_CONSOLE_UART_INDEX 1
+#define DEBUG_CONSOLE_UART_INDEX 7
 #endif
 
 /* The UART to use for debug messages. */
@@ -40,6 +40,12 @@
 #define BOARD_DEBUG_UART_INSTANCE 2U
 #define BOARD_UART_IRQ            LPUART2_IRQn
 #define BOARD_UART_IRQ_HANDLER    LPUART2_IRQHandler
+#elif DEBUG_CONSOLE_UART_INDEX == 7
+#define BOARD_DEBUG_UART_BASEADDR (uint32_t) LPUART7
+#define BOARD_DEBUG_UART_INSTANCE 7U
+#define BOARD_UART_IRQ            LPUART7_IRQn
+#define BOARD_UART_IRQ_HANDLER    LPUART7_IRQHandler
+#elif
 #elif DEBUG_CONSOLE_UART_INDEX == 12
 #define BOARD_DEBUG_UART_BASEADDR (uint32_t) LPUART12
 #define BOARD_DEBUG_UART_INSTANCE 12U
@@ -52,6 +58,10 @@
 #ifndef BOARD_DEBUG_UART_BAUDRATE
 #define BOARD_DEBUG_UART_BAUDRATE (115200U)
 #endif /* BOARD_DEBUG_UART_BAUDRATE */
+
+/* Shared memory base for RPMsg communication. */
+#define VDEV0_VRING_BASE	(0x20236000U)
+#define RESOURCE_TABLE_OFFSET	(0x9000U)
 
 /* Definitions for eRPC MU transport layer */
 #if defined(FSL_FEATURE_MU_SIDE_A)

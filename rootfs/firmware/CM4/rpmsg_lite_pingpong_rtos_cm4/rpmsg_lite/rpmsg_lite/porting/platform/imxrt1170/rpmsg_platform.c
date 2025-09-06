@@ -35,17 +35,12 @@ static void mcmgr_event_handler(uint16_t vring_idx, void *context)
 #else
 static void mu_isr(MU_Type *base)
 {
-    uint32_t flags;
-    flags = MU_GetStatusFlags(base);
-    if (((uint32_t)kMU_GenInt0Flag & flags) != 0UL)
-    {
-        MU_ClearStatusFlags(base, (uint32_t)kMU_GenInt0Flag);
-        env_isr(0);
-    }
-    if (((uint32_t)kMU_GenInt1Flag & flags) != 0UL)
-    {
-        MU_ClearStatusFlags(base, (uint32_t)kMU_GenInt1Flag);
-        env_isr(1);
+    uint32_t chnl;
+
+    if (MU_GetStatusFlags(base) & (kMU_Rx0FullFlag >> RPMSG_MU_CHANNEL)) {
+	/* Read message from RX register */
+        chnl = MU_ReceiveMsgNonBlocking(MUB, RPMSG_MU_CHANNEL);
+        env_isr(chnl >> 16);
     }
 }
 
@@ -64,6 +59,9 @@ int32_t MUA_IRQHandler(void)
     return 0;
 }
 #elif defined(FSL_FEATURE_MU_SIDE_B)
+/*
+ * MU Interrrupt RPMsg handler
+ */
 int32_t MUB_IRQHandler(void)
 {
     mu_isr(MUB);
@@ -163,7 +161,7 @@ void platform_notify(uint32_t vector_id)
 #if defined(FSL_FEATURE_MU_SIDE_A)
     (void)MU_TriggerInterrupts(MUA, 1UL << (19UL - RL_GET_Q_ID(vector_id)));
 #elif defined(FSL_FEATURE_MU_SIDE_B)
-    (void)MU_TriggerInterrupts(MUB, 1UL << (19UL - RL_GET_Q_ID(vector_id)));
+    MU_SendMsg(MUB, RPMSG_MU_CHANNEL, (uint32_t)(vector_id << 16));
 #endif
 #endif
     env_unlock_mutex(platform_lock);
@@ -330,6 +328,14 @@ int32_t platform_init(void)
     /* The MU peripheral driver is not initialized here because it covers also
     the secondary core booting controls and it needs to be initialized earlier
     in the application code */
+
+    /*
+     * Prepare for the MU Interrupt
+     *  MU must be initialized before rpmsg init is called
+     */
+    MU_Init(MUB);
+    NVIC_SetPriority(MUB_IRQn, 2);
+    NVIC_EnableIRQ(MUB_IRQn);
 
 #if defined(RL_USE_MCMGR_IPC_ISR_HANDLER) && (RL_USE_MCMGR_IPC_ISR_HANDLER == 1)
     mcmgr_status_t retval = kStatus_MCMGR_Error;
