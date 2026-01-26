@@ -114,6 +114,41 @@
 	};
 };
 
+&fec_1g {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec_1g>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_ENET2>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL1_DIV2>;
+	assigned-clock-rates = <125000000>;
+	// This is used to enable ENET1G RGMII TX clock output
+	// as the driver does not provide such a control
+	fsl,ref-clk-dir = <&gpr 0x14 2 1>;
+
+	phy-mode = "rgmii-id";
+	phy-handle = <&ethphy1>;
+	phy-reset-duration = <10>;
+	phy-reset-post-delay = <50>;
+	phy-reset-gpios = <&gpio11 14 GPIO_ACTIVE_LOW>;
+
+	fsl,mii-exclusive;
+
+	clocks = <&clks IMXRT1170_CLK_ROOT_BUS>, <&clks IMXRT1170_CLK_ROOT_BUS>, <&clks IMXRT1170_CLK_ENET2>;
+	clock-names = "ipg", "ahb", "enet_clk_ref";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy1: ethernet-phy@1 {
+			reg = <0>;
+			clocks = <&clks IMXRT1170_CLK_ENET2>;
+			clock-names = "rmii-ref";
+		};
+	};
+};
+
 &usdhc1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc1>;
@@ -207,6 +242,30 @@
 			IOMUXC_GPIO_DISP_B2_09_ENET_RX_ER	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 			/* INT */
 			IOMUXC_GPIO_AD_12_GPIO9_IO11		(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+	pinctrl_fec_1g: fec1ggrp {
+		fsl,pins = <
+			IOMUXC_GPIO_EMC_B2_19_ENET_1G_MDC	 (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_EMC_B2_20_ENET_1G_MDIO	 (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+
+			IOMUXC_GPIO_DISP_B1_00_ENET_1G_RX_EN	 (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B1_01_ENET_1G_RX_CLK	 (IMX_PAD_SION | MXRT1170_PAD_SRE | MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_02_ENET_1G_RX_DATA00 (IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B1_03_ENET_1G_RX_DATA01 (IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B1_04_ENET_1G_RX_DATA02 (IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B1_05_ENET_1G_RX_DATA03 (IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B1_06_ENET_1G_TX_DATA03 (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_07_ENET_1G_TX_DATA02 (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_08_ENET_1G_TX_DATA01 (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_09_ENET_1G_TX_DATA00 (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_10_ENET_1G_TX_EN	 (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B1_11_ENET_1G_TX_CLK_IO (MXRT1170_PAD_DSE)
+
+			/* INT */
+			IOMUXC_GPIO_DISP_B2_12_GPIO11_IO13	 (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			/* RST */
+			IOMUXC_GPIO_DISP_B2_13_GPIO11_IO14	 (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 		>;
 	};
 
