@@ -1,0 +1,78 @@
+
+gre.animate.complete.Info_menu_show##Info_menu_show animation complete #The animation named Info_menu_show has completed
+
+gre.animate.complete.led_menu_show##led_menu_show animation complete #The animation named led_menu_show has completed
+
+gre.animate.complete.audio_menu_show##audio_menu_show animation complete #The animation named audio_menu_show has completed
+
+gre.animate.complete.lcd_menu_show##lcd_menu_show animation complete #The animation named lcd_menu_show has completed
+
+gre.animate.complete.hide_button##hide_button animation complete #The animation named hide_button has completed
+
+gre.animate.complete.home_screen##home_screen animation complete #The animation named home_screen has completed
+
+gre.animate.complete.NewAnimation##NewAnimation animation complete #The animation named NewAnimation has completed
+
+gre.animate.complete.default_bright##default_bright animation complete #The animation named default_bright has completed
+
+gre.animate.complete.activate1##activate1 animation complete #The animation named activate1 has completed
+
+gre.animate.complete.activate2##activate2 animation complete #The animation named activate2 has completed
+
+gre.animate.complete.activate3##activate3 animation complete #The animation named activate3 has completed
+
+gre.animate.complete.activate4##activate4 animation complete #The animation named activate4 has completed
+
+gre.animate.complete.activate5##activate5 animation complete #The animation named activate5 has completed
+
+gre.animate.complete.activate6##activate6 animation complete #The animation named activate6 has completed
+
+gre.animate.complete.activate7##activate7 animation complete #The animation named activate7 has completed
+
+gre.animate.complete.activate8##activate8 animation complete #The animation named activate8 has completed
+
+gre.animate.complete.activate9##activate9 animation complete #The animation named activate9 has completed
+
+gre.animate.complete.activate0##activate0 animation complete #The animation named activate0 has completed
+
+gre.animate.complete.activateless##activateless animation complete #The animation named activateless has completed
+
+gre.animate.complete.activatedell##activatedell animation complete #The animation named activatedell has completed
+
+gre.animate.complete.activateplus##activateplus animation complete #The animation named activateplus has completed
+
+gre.animate.complete.activateminus##activateminus animation complete #The animation named activateminus has completed
+
+gre.animate.complete.NewAnimation999##NewAnimation999 animation complete #The animation named NewAnimation999 has completed
+
+gre.animate.complete.main_menu_hide_reversed_copy##main_menu_hide_reversed_copy animation complete #The animation named main_menu_hide_reversed_copy has completed
+
+gre.animate.complete.audio_main_menu_hide_copy##audio_main_menu_hide_copy animation complete #The animation named audio_main_menu_hide_copy has completed
+
+gre.animate.complete.main_menu_hide_reversed##main_menu_hide_reversed animation complete #The animation named main_menu_hide_reversed has completed
+
+gre.animate.complete.audio_main_menu_hide##audio_main_menu_hide animation complete #The animation named audio_main_menu_hide has completed
+
+gre.animate.complete.info_main_menu_hide##info_main_menu_hide animation complete #The animation named info_main_menu_hide has completed
+
+gre.animate.complete.lcd_main_menu_hide##lcd_main_menu_hide animation complete #The animation named lcd_main_menu_hide has completed
+
+gre.animate.complete.led_main_menu_hide##led_main_menu_hide animation complete #The animation named led_main_menu_hide has completed
+
+gre.animate.complete.menu_show##menu_show animation complete #The animation named menu_show has completed
+
+gre.animate.complete.audio_play##audio_play animation complete #The animation named audio_play has completed
+
+gre.animate.complete.activate##activate animation complete #The animation named activate has completed
+
+gre.animate.complete.show_keys##show_keys animation complete #The animation named show_keys has completed
+
+timer_tumbler##timer_tumbler
+
+tumbler_timer_start##tumbler_timer_start
+
+timer.tumbler##timer.tumbler timer fired #The timer named timer.tumbler has fired
+
+tumbler_timer_stop##tumbler_timer_stop
+
+resize_table##resize_table

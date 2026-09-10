@@ -1,0 +1,232 @@
+# Device nodes
+dir /dev 0755 0 0
+nod /dev/console 0600 0 0 c 5 1
+
+# Various system directories
+dir /root 0700 0 0
+dir /proc 0755 0 0
+dir /sys 0755 0 0
+dir /etc 0755 0 0
+dir /var 0755 0 0
+dir /var/config 0755 0 0
+dir /var/tmp 0755 0 0
+dir /var/log 0755 0 0
+dir /var/lock 0755 0 0
+dir /run 0755 0 0
+slink /var/run /run 777 0 0
+dir /lib 777 0 0
+dir /lib/firmware 777 0 0
+dir /bin 755 0 0
+dir /sbin 755 0 0
+dir /usr 755 0 0
+dir /usr/bin 755 0 0
+dir /usr/sbin 755 0 0
+dir /usr/share 755 0 0
+dir /usr/libexec 755 0 0
+dir /mnt 777 0 0
+dir /mnt/nfs 777 0 0
+dir /mnt/sdcard 777 0 0
+dir /mnt/usbflash 777 0 0
+dir /mnt/qspi 777 0 0
+dir /mnt/flash 777 0 0
+dir /mnt/stm_flash 777 0 0
+dir /tmp 777 0 0
+
+# busybox multi-tool utility
+# Note that largely symlinks to configured applets are created
+# at run-time on the target however the few symlinks below are
+# needed for the system to boot up and run the init scripts
+ifdef  BUILDROOT_DEFCONFIG file /bin/busybox ${TARGET_ROOT}/bin/busybox 755 0 0
+ifndef BUILDROOT_DEFCONFIG file /bin/busybox ${INSTALL_ROOT}/A2F/busybox/busybox 755 0 0
+
+slink /bin/init busybox 777 0 0
+slink /init /bin/init 777 0 0
+slink /bin/mount busybox 777 0 0
+slink /bin/sh busybox 777 0 0
+
+# Kernel module
+file /hello.ko ${INSTALL_ROOT}/projects/${SAMPLE}/kmod/hello.ko 777 0 0
+
+# init.d scripts
+dir /etc/init.d 0755 0 0
+localdir /etc/init.d ${INSTALL_ROOT}/projects/${SAMPLE}/etc/init.d 0 0
+
+# Various system configuration files
+file /etc/inittab ${INSTALL_ROOT}/projects/${SAMPLE}/etc/inittab 755 0 0
+file /etc/fstab ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fstab 755 0 0
+file /etc/rc ${INSTALL_ROOT}/projects/${SAMPLE}/etc/rc 755 0 0
+file /etc/hosts ${INSTALL_ROOT}/projects/${SAMPLE}/etc/hosts 644 0 0
+file /etc/services ${INSTALL_ROOT}/projects/${SAMPLE}/etc/services 644 0 0
+file /etc/protocols ${INSTALL_ROOT}/projects/${SAMPLE}/etc/protocols 644 0 0
+file /etc/passwd ${INSTALL_ROOT}/projects/${SAMPLE}/etc/passwd 644 0 0
+file /etc/group ${INSTALL_ROOT}/projects/${SAMPLE}/etc/group 644 0 0
+file /etc/shadow ${INSTALL_ROOT}/projects/${SAMPLE}/etc/shadow 644 0 0
+file /etc/securetty ${INSTALL_ROOT}/projects/${SAMPLE}/etc/securetty 644 0 0
+file /etc/profile ${INSTALL_ROOT}/projects/${SAMPLE}/etc/profile 644 0 0
+file /etc/resolv.conf \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/resolv.conf 644 0 0
+
+# Network configuration script
+file /etc/netstart.sh ${INSTALL_ROOT}/projects/${SAMPLE}/etc/netstart.sh 755 0 0
+
+# inetd configuration (dropbear ssh via inetd)
+file /etc/inetd.conf ${INSTALL_ROOT}/projects/${SAMPLE}/etc/inetd.conf 644 0 0
+
+# U-boot environment management tools
+file /bin/fw_printenv ${TARGET_ROOT}/usr/bin/fw_printenv 755 0 0
+slink /bin/fw_setenv fw_printenv 755 0 0
+ifarch STM32H7 file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.stm32h7-som 644 0 0
+ifarch STM32H753IEVAL file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.mmc 644 0 0
+ifarch IMXRT102X_NXPEVK file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.mmc 644 0 0
+ifarch IMXRT105X_NXPEVK file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.mmc 644 0 0
+ifarch IMXRT106X_NXPEVK file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.mmc 644 0 0
+ifarch IMXRT117X_NXPEVK file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.mmc 644 0 0
+ifarch MAAXBOARD_RT file /etc/fw_env.config \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.hyperflash 644 0 0
+
+# dropbear ssh server and client
+dir /etc/dropbear 0755 0 0
+file /usr/sbin/dropbear ${TARGET_ROOT}/usr/sbin/dropbear 755 0 0
+slink /usr/bin/ssh ../sbin/dropbear 755 0 0
+slink /usr/bin/scp ../sbin/dropbear 755 0 0
+slink /usr/bin/dbclient ../sbin/dropbear 755 0 0
+
+# SFTP server
+file /usr/libexec/sftp-server \
+ ${TARGET_ROOT}/usr/libexec/sftp-server 755 0 0
+
+# net-snmp project
+# file /usr/bin/snmpget ${INSTALL_ROOT}/A2F/xiproot/usr/bin/snmpget 755 0 0
+# file /usr/bin/snmptrap ${INSTALL_ROOT}/A2F/xiproot/usr/bin/snmptrap 755 0 0
+# file /etc/snmpd.conf ${INSTALL_ROOT}/${SAMPLE}/etc/snmpd.conf 644 0 0
+# file /etc/snmptrapd.conf ${INSTALL_ROOT}/${SAMPLE}/etc/snmptrapd.conf 644 0 0
+
+# Web server and demo
+localdir /httpd/html ${INSTALL_ROOT}/projects/${SAMPLE}/html 0 0
+slink /httpd/html/cgi-bin /httpd/html 700 0 0
+
+# DHCP configuration
+localdir /usr/share/udhcpc ${INSTALL_ROOT}/projects/${SAMPLE}/dhcp 0 0
+#file /etc/udhcpd.conf \
+# ${INSTALL_ROOT}/projects/${SAMPLE}/etc/udhcpd.conf 644 0 0
+#file /var/tmp/udhcpd.leases \
+# ${INSTALL_ROOT}/projects/${SAMPLE}/etc/udhcpd.leases 644 0 0
+
+# PPP
+file /usr/sbin/pppd ${TARGET_ROOT}/usr/sbin/pppd 755 0 0
+file /usr/sbin/chat ${TARGET_ROOT}/usr/sbin/chat 755 0 0
+localdir /etc/ppp ${INSTALL_ROOT}/projects/${SAMPLE}/etc/ppp 0 0
+slink /usr/bin/pon /etc/ppp/pon 777 0 0
+slink /usr/bin/poff /etc/ppp/poff 777 0 0
+
+# I2C test and management tools
+ifkconfig CONFIG_I2C file /usr/sbin/i2cdump ${TARGET_ROOT}/usr/sbin/i2cdump 755 0 0
+ifkconfig CONFIG_I2C file /usr/sbin/i2cdetect ${TARGET_ROOT}/usr/sbin/i2cdetect 755 0 0
+ifkconfig CONFIG_I2C file /usr/sbin/i2cset ${TARGET_ROOT}/usr/sbin/i2cset 755 0 0
+ifkconfig CONFIG_I2C file /usr/sbin/i2cget ${TARGET_ROOT}/usr/sbin/i2cget 755 0 0
+ifkconfig CONFIG_I2C file /usr/lib/libi2c.so.0.1.1 ${TARGET_ROOT}/usr/lib/libi2c.so.0.1.1 755 0 0
+ifkconfig CONFIG_I2C slink /usr/lib/libi2c.so.0 libi2c.so.0.1.1 755 0 0
+ifkconfig CONFIG_I2C slink /usr/lib/libi2c.so libi2c.so.0 755 0 0
+
+# Bluetooth files and tools
+ifkconfig CONFIG_BT localdir /etc/bluetooth ${INSTALL_ROOT}/projects/${SAMPLE}/etc/bluetooth 0 0
+ifkconfig CONFIG_BT file /usr/sbin/hcid ${TARGET_ROOT}/usr/local/sbin/hcid 777 0 0
+ifkconfig CONFIG_BT file /usr/sbin/sdpd ${TARGET_ROOT}/usr/local/sbin/sdpd 777 0 0
+ifkconfig CONFIG_BT file /usr/bin/obexftp ${TARGET_ROOT}/usr/local/bin/obexftp 777 0 0
+ifkconfig CONFIG_BT file /usr/bin/obexftpd ${TARGET_ROOT}/usr/local/bin/obexftpd 777 0 0
+ifkconfig CONFIG_BT file /usr/bin/rfcomm ${TARGET_ROOT}/usr/local/bin/rfcomm 777 0 0
+ifkconfig CONFIG_BT file /usr/bin/sdptool ${TARGET_ROOT}/usr/local/bin/sdptool 777 0 0
+ifkconfig CONFIG_BT file /usr/bin/hcitool ${TARGET_ROOT}/usr/local/bin/hcitool 777 0 0
+ifkconfig CONFIG_BT file /usr/lib/libobexftp.so.0 ${TARGET_ROOT}/usr/local/lib/libobexftp.so.0 755 0 0
+ifkconfig CONFIG_BT file /usr/lib/libbfb.so.0 ${TARGET_ROOT}/usr/local/lib/libbfb.so.0 755 0 0
+ifkconfig CONFIG_BT file /usr/lib/libmulticobex.so.1 ${TARGET_ROOT}/usr/local/lib/libmulticobex.so.1 755 0 0
+ifkconfig CONFIG_BT file /usr/lib/libopenobex.so.1 ${TARGET_ROOT}/usr/local/lib/libopenobex.so.1 755 0 0
+ifkconfig CONFIG_BT file /usr/lib/libbluetooth.so.1 ${TARGET_ROOT}/usr/local/lib/libbluetooth.so.1 755 0 0
+
+# WiFi firmware
+ifkconfig CONFIG_CFG80211 localdir /lib/firmware/brcm ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/brcm 0 0
+ifkconfig CONFIG_CFG80211 file /lib/firmware/rt2870.bin ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/rt28xx/rt2870.bin 777  0 0
+ifkconfig CONFIG_CFG80211 file /lib/firmware/brcm/brcmfmac4373-sdio.clm_blob ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/brcm/brcmfmac4373-sdio.clm_blob 777  0 0
+ifkconfig CONFIG_CFG80211 file /lib/firmware/brcm/brcmfmac4373-sdio.bin ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/brcm/brcmfmac4373-sdio.bin 777  0 0
+ifkconfig CONFIG_CFG80211 file /lib/firmware/brcm/brcmfmac4373-sdio.txt ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/brcm/brcmfmac4373-sdio.txt 777  0 0
+ifkconfig CONFIG_CFG80211 ifarch MAAXBOARD_RT file /lib/firmware/mrvl/sd8987_uapsta.bin ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/mwifiex/sduart8987_combo.bin 777 0 0
+
+# WiFi tools
+ifkconfig CONFIG_CFG80211 file /usr/sbin/wpa_supplicant \
+ ${TARGET_ROOT}/usr/sbin/wpa_supplicant 755 0 0
+ifkconfig CONFIG_CFG80211 file /usr/sbin/wpa_cli ${TARGET_ROOT}/usr/sbin/wpa_cli 755 0 0
+ifkconfig CONFIG_CFG80211 file /usr/lib/libnl-3.so.200 ${TARGET_ROOT}/usr/lib/libnl-3.so.200 755 0 0
+ifkconfig CONFIG_CFG80211 file /usr/lib/libnl-genl-3.so.200 ${TARGET_ROOT}/usr/lib/libnl-genl-3.so.200 755 0 0
+ifkconfig CONFIG_CFG80211 file /etc/wpa_supplicant.conf \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/etc/wpa_supplicant.conf 600 0 0
+#file /bin/hostapd ${INSTALL_ROOT}/A2F/root/usr/bin/hostapd 755 0 0
+#file /etc/hostapd-minimal.conf \
+# ${INSTALL_ROOT}/projects/${SAMPLE}/etc/hostapd-minimal.conf 644 0 0
+#file /bin/start_ap ${INSTALL_ROOT}/projects/${SAMPLE}/bin/start_ap 755 0 0
+
+# GDB server.
+# Note that it is needed only if you want to debug applications on the target
+# from the cross-GDB on the development host. If you do not anticipate
+# the need to do so on production units in the field, comment out the line
+# below to reduce the footprint of the target root file system.
+file /usr/bin/gdbserver ${TARGET_ROOT}/usr/bin/gdbserver 755 0 0
+
+# GUI tests and tools
+file /usr/sbin/lcdtest ${INSTALL_ROOT}/projects/${SAMPLE}/lcdtest/lcdtest 777 0 0
+file /usr/bin/ts_test ${INSTALL_ROOT}/projects/${SAMPLE}/lcdtest/ts_test 777 0 0
+file /usr/bin/ts_calibrate ${TARGET_ROOT}/usr/bin/ts_calibrate 777 0 0
+file /etc/ts.conf ${TARGET_ROOT}/etc/ts.conf 644 0 0
+localdir /usr/lib/ts ${TARGET_ROOT}/usr/lib/ts 0 0
+ifarch IMXRT105X_NXPEVK file /etc/pointercal ${INSTALL_ROOT}/projects/${SAMPLE}/etc/pointercal.imxrt1050-evk 777 0 0
+ifarch STM32H7 file /etc/pointercal ${INSTALL_ROOT}/projects/${SAMPLE}/etc/pointercal.stm32h7-som 777 0 0
+file /usr/sbin/evtest ${INSTALL_ROOT}/projects/${SAMPLE}/evtest/evtest 777 0 0
+
+# Audio, supported on STM32F7/UCL-SOM-BSB
+ifarch STM32F7 file /usr/bin/aplay ${INSTALL_ROOT}/A2F/root/usr/bin/aplay 777 0 0
+ifarch STM32F7 file /usr/bin/amixer ${INSTALL_ROOT}/A2F/root/usr/bin/amixer 777 0 0
+ifarch STM32F7 localdir /usr/share/alsa ${INSTALL_ROOT}/A2F/root/usr/share/alsa 0 0
+
+# Mount partition and start GUI.
+file /etc/guistart.sh ${INSTALL_ROOT}/projects/${SAMPLE}/etc/guistart.sh 777 0 0
+
+# USB Gadget config script
+file /usr/bin/usb_gadget.sh ${INSTALL_ROOT}/projects/${SAMPLE}/etc/usb_gadget.sh 755 0 0
+
+# Shared libs
+file /lib/ld-uClibc-1.0.47.so ${TARGET_ROOT}/lib/ld-uClibc-1.0.47.so 755 0 0
+slink /lib/ld-uClibc.so.0 ld-uClibc.so.1 755 0 0
+slink /lib/ld-uClibc.so.1 ld-uClibc-1.0.47.so 755 0 0
+slink /usr/lib/ld.so.1 /lib/ld-uClibc.so.0 755 0 0
+file /lib/libuClibc-1.0.47.so ${TARGET_ROOT}/lib/libuClibc-1.0.47.so 755 0 0
+slink /lib/libc.so.0 libuClibc-1.0.47.so 755 0 0
+file /lib/libgcc_s.so.1 ${TARGET_ROOT}/lib/libgcc_s.so.1 755 0 0
+file /usr/lib/libstdc++.so.6.0.29 ${TARGET_ROOT}/usr/lib/libstdc++.so.6.0.29 755 0 0
+slink /usr/lib/libstdc++.so libstdc++.so.6.0.29 755 0 0
+slink /usr/lib/libstdc++.so.6 libstdc++.so.6.0.29 755 0 0
+
+file /usr/lib/libts.so.0.10.4 ${TARGET_ROOT}/usr/lib/libts.so.0.10.4 755 0 0
+slink /usr/lib/libts.so.0 libts.so.0.10.4 755 0 0
+slink /usr/lib/libts.so libts.so.0 755 0 0
+
+file /usr/lib/libubootenv.so.0.3.2 ${TARGET_ROOT}/usr/lib/libubootenv.so.0.3.2 755 0 0
+slink /usr/lib/libubootenv.so.0 libubootenv.so.0.3.2 755 0 0
+slink /usr/lib/libubootenv.so libubootenv.so.0 755 0 0
+
+file /usr/lib/libz.so.1.2.12 ${TARGET_ROOT}/usr/lib/libz.so.1.2.12 755 0 0
+slink /usr/lib/libz.so.1 libz.so.1.2.12 755 0 0
+slink /usr/lib/libz.so libz.so.1 755 0 0
+
+# LVGL
+ifkconfig CONFIG_FB_MXS file /usr/lib/liblvgl.so ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/liblvgl.so 755 0 0
+ifkconfig CONFIG_FB_MXS file /usr/bin/benchmark_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/benchmark 755 0 0
+ifkconfig CONFIG_FB_MXS file /usr/bin/music_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/music 755 0 0
+ifkconfig CONFIG_FB_MXS file /usr/bin/widgets_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/widgets 755 0 0
+ifkconfig CONFIG_FB_MXS file /usr/bin/stress_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/stress 755 0 0
+ifkconfig CONFIG_FB_MXS ifarch IMXRT105X_NXPEVK file /usr/bin/ebike_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/ebike 755 0 0
+ifkconfig CONFIG_FB_MXS ifarch IMXRT106X_NXPEVK file /usr/bin/ebike_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/ebike 755 0 0

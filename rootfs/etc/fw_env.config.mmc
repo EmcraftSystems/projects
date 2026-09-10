@@ -1,0 +1,8 @@
+# Configuration file for fw_(printenv/setenv) utility.
+# Up to two entries are valid, in this case the redundant
+# environment sector is assumed present.
+
+# Configuration for a board with CONFIG_ENV_IS_IN_MMC
+#
+# MTD device name	Device offset	Env. size
+/dev/mmcblk0		0x80000		0x1f000

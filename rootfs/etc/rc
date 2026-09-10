@@ -1,0 +1,53 @@
+#!/bin/sh
+
+/bin/busybox --install -s
+. /etc/profile
+
+mount -a
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts -ogid=5,mode=620
+
+# Check if need to wait until SD-card detected (contain U-Boot env)
+if [ -e /etc/wait_sd_detection ]; then
+    while [ 1 ]; do
+	mount /dev/mmcblk0p1 /mnt/sdcard >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+	    break;
+	fi
+    done
+fi
+
+# Get 'gui' from U-Boot env. It may contain:
+# - reserved words 'qt' or 'yes'
+# - path to the script to execute
+#
+gui=`fw_printenv -n gui 2> /dev/null`
+if [ "${gui}" == "qt" -o "${gui}" == "yes" ]; then
+    # If U-Boot env has 'touch', adjust touch calibration file
+    touch=`fw_printenv -n touch 2> /dev/null`
+    if [ "${touch}" == "kdctp" ]; then
+	ln -sf /etc/pointercal.kdctp /etc/pointercal
+    else
+	ln -sf /etc/pointercal.ucl-bsb.tn43 /etc/pointercal
+    fi
+    /etc/guistart.sh &
+fi
+if [ "${gui}" != "" -a -x "${gui}" ]; then
+    ${gui} &
+fi
+
+/etc/netstart.sh &
+## Wait for networking to set up
+# sleep 2
+# mount -o nolock,rsize=1024 172.17.0.1:/home/vlad/test /mnt
+
+# Run init.d scripts
+for s in /etc/init.d/S*; do
+    [ -x "$s" ] && "$s" start
+done
+
+# If audio is present, then tune it
+amixer >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	amixer -q sset 'Headphone' 50%,50% &
+fi

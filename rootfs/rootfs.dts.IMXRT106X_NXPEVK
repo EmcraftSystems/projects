@@ -1,0 +1,333 @@
+/*
+ *  (C) Copyright 2017-2024 Emcraft Systems
+ *  Vladimir Skvortsov <vskvortsov@emcraft.com>
+ *
+ *  SPDX-License-Identifier:	GPL-2.0+
+*/
+
+/dts-v1/;
+#include "imxrt1060.dtsi"
+#include "imxrt1050-pinfunc.h"
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "NXP IMXRT1060-evk board";
+	compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
+
+	chosen {
+		stdout-path = &lpuart1;
+	};
+
+	aliases {
+		gpio0 = &gpio1;
+		gpio1 = &gpio2;
+		gpio2 = &gpio3;
+		gpio3 = &gpio4;
+		gpio4 = &gpio5;
+		mmc0 = &usdhc1;
+		serial0 = &lpuart1;
+		i2c0 = &lpi2c1;
+		rtc0 = &snvsrtc;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80000000 0x2000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		dmapool: dmapool@81e00000 {
+			compatible = "shared-dma-pool";
+			reg = <0x81e00000 0x100000>;
+			no-map;
+			linux,dma-default;
+		};
+
+		video_mem: memory@81f00000 {
+			reg = <0x81f00000 0x100000>;
+			no-map;
+		};
+	};
+
+	reg_vcc_3v3_mcu: regulator {
+		/* TBD */
+		status = "disabled";
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_keys>;
+
+		user-button {
+			label = "user-button";
+			gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_A>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds>;
+		/* disbale user-led by deafult due to pinctrl conflict with the FEC device */
+		status = "disbaled";
+
+		user-led {
+			label = "user-led";
+			gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+	};
+
+	backlight {
+		compatible = "gpio-backlight";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_backlight>;
+		gpios = <&gpio2 31 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&lpuart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&usdhc1 {
+	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+	pinctrl-0 = <&pinctrl_usdhc0>;
+	pinctrl-1 = <&pinctrl_usdhc0>;
+	pinctrl-2 = <&pinctrl_usdhc0>;
+	pinctrl-3 = <&pinctrl_usdhc0>;
+	status = "okay";
+};
+
+&fec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1050_CLK_ENET_REF>, <&clks IMXRT1050_CLK_PLL6_BYPASS>;
+	assigned-clock-rates = <50000000>;
+	assigned-clock-parents = <0>, <&clks IMXRT1050_CLK_PLL6>;
+
+	clocks = <&clks IMXRT1050_CLK_ENET>,
+		 <&clks IMXRT1050_CLK_AHB_PODF>,
+		 <&clks IMXRT1050_CLK_ENET_REF>;
+	clock-names = "ipg", "ahb", "enet_clk_ref";
+	fsl,ref-clk-dir = <&gpr 4 17 1>;
+
+	phy-mode = "rmii";
+	phy-handle = <&ethphy0>;
+	phy-reset-duration = <1>;
+	phy-reset-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy0: ethernet-phy@0 {
+			reg = <2>;
+			clocks = <&clks IMXRT1050_CLK_ENET_REF>;
+			clock-names = "rmii-ref";
+		};
+	};
+};
+
+&usbotg1 {
+	dr_mode = "otg";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg1_id>;
+	status = "okay";
+	disable-over-current;
+};
+
+&usbotg2 {
+	dr_mode = "host";
+	status = "okay";
+	disable-over-current;
+};
+
+&adc1 {
+	/* TBD */
+	status = "disabled";
+};
+
+&adc2 {
+	/* TBD */
+	status = "disabled";
+};
+
+&lcdif {
+       pinctrl-names = "default";
+       pinctrl-0 = <&pinctrl_lcdif>;
+       display = <&display0>;
+       memory-region = <&video_mem>;
+       status = "okay";
+       data-swizzle;
+
+       display0: display0 {
+	       model = "RK043FN02H-CT";
+	       bits-per-pixel = <16>;
+	       bus-width = <16>;
+
+	       display-timings {
+		       native-mode = <&timing0>;
+		       timing0: timing0 {
+			       clock-frequency = <40625000>;
+			       hactive = <480>;
+			       vactive = <272>;
+			       hback-porch = <8>;
+			       hfront-porch = <4>;
+			       vback-porch = <2>;
+			       vfront-porch = <4>;
+			       hsync-len = <41>;
+			       vsync-len = <10>;
+			       hsync-active = <0>;
+			       vsync-active = <0>;
+			       de-active = <1>;
+			       pixelclk-active = <0>;
+		       };
+	       };
+       };
+};
+
+&lpi2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpi2c1>;
+	status = "okay";
+
+	ft: touchscreen@38 {
+		compatible = "focaltech,ft5x2";
+		reg = <0x38>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ft5x2>;
+		x-max = <480>;
+		y-max = <272>;
+		irq-gpio = <&gpio1 11 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+	};
+
+	eeprom0: eeprom0@58 {
+		compatible = "at,24c256";
+		reg = <0x58>;
+		status = "disabled";
+	};
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl_lpuart1: lpuart1grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_12_LPUART1_TXD	MXRT10XX_PAD_CFG_UART
+			MXRT1050_IOMUXC_GPIO_AD_B0_13_LPUART1_RXD	MXRT10XX_PAD_CFG_UART
+		>;
+	};
+
+	pinctrl_usdhc0: usdhc0grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B1_12_USDHC1_CD_B		MXRT10XX_PAD_CFG_GPIO
+			MXRT1050_IOMUXC_GPIO_B1_14_USDHC1_VSELECT	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_00_USDHC1_CMD	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_01_USDHC1_CLK	MXRT10XX_PAD_CFG_SDHC_CLK
+			MXRT1050_IOMUXC_GPIO_SD_B0_05_USDHC1_DATA3	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_04_USDHC1_DATA2	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_03_USDHC1_DATA1	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_02_USDHC1_DATA0	MXRT10XX_PAD_CFG_SDHC
+		>;
+	};
+
+	pinctrl_fec: fecgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B1_04_ENET_RX_DATA00	MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_05_ENET_RX_DATA01	MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_06_ENET_RX_EN		MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_07_ENET_TX_DATA00	MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_08_ENET_TX_DATA01	MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_09_ENET_TX_EN		MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_10_ENET_REF_CLK		MXRT10XX_PAD_CFG_ENET_CLK_OUT
+			MXRT1050_IOMUXC_GPIO_B1_11_ENET_RX_ER		MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_EMC_40_ENET_MDC		MXRT10XX_PAD_CFG_ENET_MDIO
+			MXRT1050_IOMUXC_GPIO_EMC_41_ENET_MDIO		MXRT10XX_PAD_CFG_ENET_MDIO
+			/* RST */
+			MXRT1050_IOMUXC_GPIO_AD_B0_09_GPIO1_IO09	MXRT10XX_PAD_CFG_GPIO
+			/* INT */
+			MXRT1050_IOMUXC_GPIO_AD_B0_10_GPIO1_IO10	MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+
+	pinctrl_leds: ledsgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_09_GPIO1_IO09	MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+
+	pinctrl_usbotg1_id: otg1idgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_01_USB_OTG1_ID	MXRT10XX_PAD_CFG_USB_OTG_ID
+		>;
+	};
+
+	pinctrl_lpi2c1: lpi2cgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL	MXRT10XX_PAD_CFG_I2C
+			MXRT1050_IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA	MXRT10XX_PAD_CFG_I2C
+		>;
+	};
+
+	pinctrl_lcdif: lcdifgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B0_00_LCD_CLK      MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_01_LCD_ENABLE   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_02_LCD_HSYNC    MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_03_LCD_VSYNC    MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_04_LCD_DATA00   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_05_LCD_DATA01   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_06_LCD_DATA02   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_07_LCD_DATA03   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_08_LCD_DATA04   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_09_LCD_DATA05   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_10_LCD_DATA06   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_11_LCD_DATA07   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_12_LCD_DATA08   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_13_LCD_DATA09   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_14_LCD_DATA10   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B0_15_LCD_DATA11   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B1_00_LCD_DATA12   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B1_01_LCD_DATA13   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B1_02_LCD_DATA14   MXRT10XX_PAD_CFG_LCD
+			MXRT1050_IOMUXC_GPIO_B1_03_LCD_DATA15   MXRT10XX_PAD_CFG_LCD
+		>;
+	};
+
+	pinctrl_backlight: backlightgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B1_15_GPIO2_IO31	(MXRT10XX_PAD_DSE_87_OHM_3V3 | \
+								 MXRT10XX_PAD_SPEED_100MHZ_1 | \
+								 MXRT10XX_PAD_SRE_SLOW)
+		>;
+	};
+
+	pinctrl_ft5x2: ft5x2grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_11_GPIO1_IO11 MXRT10XX_PAD_CFG_GPIO
+			MXRT1050_IOMUXC_GPIO_AD_B0_02_GPIO1_IO02 (MXRT10XX_PAD_DSE_87_OHM_3V3 | \
+								 MXRT10XX_PAD_SPEED_100MHZ_1 | \
+								 MXRT10XX_PAD_SRE_SLOW)
+		>;
+	};
+};
+
+&iomuxc_snvs {
+	pinctrl_keys: keysgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_SNVS_WAKEUP_GPIO5_IO00		MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+};
