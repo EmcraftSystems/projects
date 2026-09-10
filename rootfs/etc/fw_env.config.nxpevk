@@ -1,0 +1,8 @@
+# Configuration file for fw_(printenv/saveenv) utility.
+# Up to two entries are valid, in this case the redundant
+# environment sector is assumed present.
+
+# Configuration for the iMX RT105x NXP-EVK board (CONFIG_ENV_IS_IN_FAT)
+#
+# MTD device name	Device offset	Env. size
+/mnt/sdcard/uboot.env	0x0000		0x2000

@@ -1,0 +1,13 @@
+lcdtest/lcdtest
+lcdtest/lcdtest.gdb
+lcdtest/ts_test
+mpu/t1
+mpu/t2
+mpu/t3
+mpu/t4
+evtest/evtest
+kmod/*.cmd
+kmod/*.mod
+kmod/*.mod.c
+kmod/Module.symvers
+kmod/modules.order

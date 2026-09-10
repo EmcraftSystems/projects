@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="root">
+	<item value="60" key="pref.default_fps"/>
+	<item value="${app:buttons.button_100.100_show}" key="anim-default_bright"/>
+	<item value="${app:lcd_demo.icons_bottom.grd_y}&#x0A;${app:lcd_demo.icons_top.grd_y}&#x0A;${app:lcd_demo.icons_bottom.grd_alpha}&#x0A;${app:lcd_demo.icons_top.grd_alpha}&#x0A;${app:home.top_bar.grd_y}" key="anim-NewAnimation1_reversed"/>
+	<item value="${app:LCD_sc.lcd_menu.grd_hidden}" key="anim-lcd_amine"/>
+	<item value="table" key="pref.default_table_name"/>
+	<item value="${app:audio_menu.back_button_up.back_up}&#x0A;${app:Info_menu.back_button_up.back_up}&#x0A;${app:lcd_menu.back_button_up.back_up}&#x0A;${app:led_menu.back_button_up.back_up}&#x0A;${app:audio_menu.Audio_top.grd_y}&#x0A;${app:Info_menu.Info_top.grd_y}&#x0A;${app:lcd_menu.LCD_top.grd_y}&#x0A;${app:led_menu.LED_top.grd_y}" key="anim-home_screen"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.top_bar.grd_height}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}" key="anim-reverse_main_sc_copy"/>
+	<item value="${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values.brightness_2.2_alpha}&#x0A;${app:levels_values1.bright_selection.grd_hidden}" key="anim-bright_select_80"/>
+	<item value="${app:led_bkgr.4_but.grd_width}&#x0A;${app:led_bkgr.4_but.grd_height}" key="anim-hide_4_b"/>
+	<item value="${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values.brightness_6.6_alpha}&#x0A;${app:levels_values1.bright_selection.grd_hidden}" key="anim-bright_select_40"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.top_bar.grd_y}" key="anim-audio_main_menu_hide_copy"/>
+	<item value="${app:Layer4.1.1_hide}" key="anim-hide_button_reversed"/>
+	<item value="home_new_sc" key="pref.default_screen_name"/>
+	<item value="${app:key_r.less.alpha}" key="anim-activateless"/>
+	<item value="${app:led_menu.LED_top.grd_y}" key="anim-led_menu_show"/>
+	<item value="${app:buttons_au.plus_but.alpha}" key="anim-activateplus"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.top_bar.grd_y}" key="anim-info_main_menu_hide"/>
+	<item value="${app:key_r.del.alpha}" key="anim-activatedell"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}" key="anim-NewAnimation999"/>
+	<item value="${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values.brightness_1.1_alpha}&#x0A;${app:levels_values1.bright_selection.grd_hidden}" key="anim-bright_select_90"/>
+	<item value="${app:led_keyboard.3_c.3c_alpha}" key="anim-activate2_copy"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LCD_iconb.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_iconb.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}" key="anim-NewAnimation77"/>
+	<item value="${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values1.bright_selection.grd_hidden}&#x0A;${app:levels_values.brightness_5.5_alpha}" key="anim-bright_select_50"/>
+	<item value="${app:audio_menu.Audio_top.grd_y}&#x0A;${app:Info_menu.Info_top.grd_y}&#x0A;${app:lcd_menu.LCD_top.grd_y}&#x0A;${app:led_menu.LED_top.grd_y}" key="anim-audio_menu_show"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.top_bar.grd_y}" key="anim-audi0_main_menu_hide"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.top_bar.grd_y}&#x0A;${app:lcd_demo.home_sc}" key="anim-main_menu_hide_reversed_copy"/>
+	<item value="" key="anim-home_menu"/>
+	<item value="audio_levels" key="pref.default_layer_name"/>
+	<item value="${app:lamp_buttons.lamp_blink.blink}" key="anim-NewAnimation"/>
+	<item value="${app:Info_menu.Info_top.grd_y}" key="anim-Info_menu_show"/>
+	<item value="${app:Layer4.11.1_fill}&#x0A;${app:Layer4.11.1_vis}&#x0A;${app:Layer4.11.1_line}" key="anim-1_button"/>
+	<item value="255:191:128:" key="pref.default_fill_color"/>
+	<item value="${app:lcd_menu.LCD_top.grd_y}" key="anim-lcd_menu_show"/>
+	<item value="${app:LED_sc.key_r.grd_alpha}" key="anim-show_keys"/>
+	<item value="${app:key_r.9.alpha}" key="anim-activate9"/>
+	<item value="${app:key_r.7.alpha}" key="anim-activate7"/>
+	<item value="${app:key_r.8.alpha}" key="anim-activate8"/>
+	<item value="${app:levels_values.brightness_7.7_alpha}&#x0A;${app:levels_values1.bright_selection.grd_y}" key="anim-bright_select"/>
+	<item value="${app:key_r.1.alpha}" key="anim-activate1"/>
+	<item value="${app:key_r.2.alpha}" key="anim-activate2"/>
+	<item value="${app:key_r.0.alpha}" key="anim-activate0"/>
+	<item value="${app:key_r.5.alpha}" key="anim-activate5"/>
+	<item value="" key="anim-NewAnimation1"/>
+	<item value="${app:lcd_blink_buttons.blinking_on.grd_hidden}&#x0A;${app:lcd_blink_buttons.blinking_on.blinking_on}" key="anim-len_blinking"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.Info_iconb.grd_height}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LCD_iconb.grd_height}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}" key="anim-led_main_menu_hide"/>
+	<item value="${app:key_r.6.alpha}" key="anim-activate6"/>
+	<item value="${app:crank_emcraft.emcraft_button.emc_button_active}&#x0A;${app:crank_emcraft.crank_button.crank_button_active}" key="anim-NewAnimation2"/>
+	<item value="${app:key_r.3.alpha}" key="anim-activate3"/>
+	<item value="${app:led_keyboard.1_c.1c_alpha}" key="anim-activate"/>
+	<item value="${app:key_r.4.alpha}" key="anim-activate4"/>
+	<item value="${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values.brightness_4.4_alpha}&#x0A;${app:levels_values1.bright_selection.grd_hidden}" key="anim-bright_select_60"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.top_bar.grd_y}" key="anim-main_menu_hide"/>
+	<item value="" key="anim-start_blinking"/>
+	<item value="${app:LCD_sc.lcd_menu.grd_hidden}" key="anim-lcd_hide_all"/>
+	<item value="${app:brightness_steps.control.level_alpha}&#x0A;${app:LCD_sc.levels_values.grd_y}&#x0A;${app:buttons.bright_selection.grd_hidden}" key="anim-show_bright"/>
+	<item value="${app:LCD_sc.lcd_menu.grd_hidden}" key="anim-lcd_amine_reversed"/>
+	<item value="${app:key_r.del.alpha}" key="anim-activatedel"/>
+	<item value="${app:Info_menu.Info_top.grd_y}" key="anim-Info_menu_show_copy"/>
+	<item value="${app:audio_menu.Audio_top.grd_y}&#x0A;${app:Info_menu.Info_top.grd_y}&#x0A;${app:lcd_menu.LCD_top.grd_y}&#x0A;${app:led_menu.LED_top.grd_y}" key="anim-menu_show"/>
+	<item value="1.0" key="pref.editor_zoom"/>
+	<item value="${app:audio_button.2.alpha}&#x0A;${app:audio_button.3.alpha}" key="anim-audio_play"/>
+	<item value="a1" key="pref.default_control_name"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.Info_iconb.grd_height}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LCD_iconb.grd_height}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}&#x0A;${app:Info_menu.Info_top.grd_y}&#x0A;${app:lcd_menu.LCD_top.grd_y}" key="anim-lcd_main_menu_hide"/>
+	<item value="${app:Layer4.1.1_hide}" key="anim-hide_button"/>
+	<item value="${app:LCD_sc.levels_values.grd_y}" key="anim-bright_select_70"/>
+	<item value="${app:levels_values1.bright_selection.grd_hidden}&#x0A;${app:levels_values1.bright_selection.grd_y}&#x0A;${app:levels_values.brightness_7.7_alpha}" key="anim-bright_select_30"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.Info_iconb.grd_height}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LCD_iconb.grd_height}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}" key="anim-main_menu_hide_reversed"/>
+	<item value="${app:buttons_au.minus_but.alpha}" key="anim-activateminus"/>
+	<item value="${app:key_r.1.alpha}" key="anim-activate1_copy"/>
+	<item value="${app:home.Audio_icon.grd_height}&#x0A;${app:home.Audio_icon.grd_y}&#x0A;${app:home.Audio_iconb.grd_height}&#x0A;${app:home.Info_icon.grd_height}&#x0A;${app:home.Info_icon.grd_y}&#x0A;${app:home.Info_iconb.grd_height}&#x0A;${app:home.LCD_icon.grd_height}&#x0A;${app:home.LCD_icon.grd_y}&#x0A;${app:home.LCD_iconb.grd_height}&#x0A;${app:home.LED_icon.grd_height}&#x0A;${app:home.LED_icon.grd_y}&#x0A;${app:home.LED_iconb.grd_height}&#x0A;${app:home.top_bar.grd_y}" key="anim-audio_main_menu_hide"/>
+	<item value="${app:key_r.1.grd_y}&#x0A;${app:key_r.1.alpha}" key="anim-activation"/>
+	<list key="pref.screen_list_order">
+		<item value="lcd_demo"/>
+		<item value="Audio_sc"/>
+		<item value="Info_sc"/>
+		<item value="audio_noplay"/>
+		<item value="LCD_sc"/>
+		<item value="LED_sc"/>
+	</list>
+</section>
