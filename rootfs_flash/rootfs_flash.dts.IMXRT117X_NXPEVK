@@ -107,7 +107,8 @@
 		#size-cells = <0>;
 
 		ethphy0: ethernet-phy@0 {
-			reg = <2>;
+			reg = <0>;
+			micrel,kszphy-allow-broadcast-address;
 			clocks = <&clks IMXRT1170_CLK_ENET1>;
 			clock-names = "rmii-ref";
 		};
