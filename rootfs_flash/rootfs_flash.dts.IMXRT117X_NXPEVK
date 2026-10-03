@@ -1,0 +1,265 @@
+/*
+ *  (C) Copyright 2023 Emcraft Systems
+ *  Vladimir Skvortsov <vskvortsov@emcraft.com>
+ *
+ *  SPDX-License-Identifier:	GPL-2.0+
+ */
+/dts-v1/;
+
+#include "imxrt1170.dtsi"
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/clock/imxrt1170-clock.h>
+#include "imxrt1170-pinfunc.h"
+
+/ {
+	model = "NXP IMXRT1170 EVK board";
+	compatible = "nxp,imxrt1170-evk", "fsl,imxrt1170", "fsl,imxrt1050";
+
+	chosen {
+		stdout-path = &lpuart1;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		linux,usable-memory = <0x80000000 0x04000000>;
+	};
+
+	reserved-memory {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                ranges;
+
+                dmapool: dmapool@83f00000 {
+                        compatible = "shared-dma-pool";
+                        reg = <0x83f00000 0x100000>;
+                        no-map;
+                        linux,dma-default;
+                };
+        };
+
+	aliases {
+		serial0 = &lpuart1;
+		ethernet0 = &fec1;
+		ethernet1 = &fec_1g;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds>;
+		user-led1 {
+			label = "user-led1";
+			gpios = <&gpio9 3 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+		user-led2 {
+			label = "user-led2";
+			gpios = <&gpio9 25 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_keys>;
+
+		user-button {
+			label = "user-button";
+			gpios = <&gpio13 0 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_A>;
+		};
+	};
+};
+
+&lpuart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&gpt1 {
+	status = "okay";
+};
+
+&fec1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec1>, <&pinctrl_fec1_lpsr>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_ENET1>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL1_DIV2>;
+	assigned-clock-rates = <50000000>;
+	fsl,ref-clk-dir = <&gpr 0x10 1 1>;
+
+	phy-mode = "rmii";
+	phy-handle = <&ethphy0>;
+	phy-reset-duration = <1>;
+	phy-reset-gpios = <&gpio12 12 GPIO_ACTIVE_LOW>;
+
+	clocks = <&clks IMXRT1170_CLK_ROOT_BUS>, <&clks IMXRT1170_CLK_ROOT_BUS>, <&clks IMXRT1170_CLK_ENET1>;
+	clock-names = "ipg", "ahb", "enet_clk_ref";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy0: ethernet-phy@0 {
+			reg = <2>;
+			clocks = <&clks IMXRT1170_CLK_ENET1>;
+			clock-names = "rmii-ref";
+		};
+	};
+};
+
+&usdhc1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc1>;
+	status = "okay";
+	/* do not configure cd-gpio due to pin conflict with ENET1:
+	SD1_CD_B and ENET_MDC are both routed to GPIO_AD_32 on
+	MIMXRT1170-EVK (SCH-32171) */
+	broken-cd;
+};
+
+&usbotg1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg1_id>;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	disable-over-current;
+	status = "okay";
+};
+
+&usbotg2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg2_id>;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	disable-over-current;
+	status = "okay";
+};
+
+&flexspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi1>;
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_FLEXSPI1>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL2_PFD2>;
+	nxp-flexspi,rx-clk-loopback-from-dqs;
+	status = "okay";
+
+	flash0: is25wp128@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <104000000>;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+
+		partition@0 {
+			label = "uboot";
+			reg = <0x0 0x60000>; };
+
+		partition@1 {
+			label = "uboot_env";
+			reg = <0x60000 0x20000>; };
+
+		partition@2 {
+			label = "kernel";
+			reg = <0x80000 0x800000>; };
+
+		partition@3 {
+			label = "rootfs";
+			reg = <0x880000 0x780000>; };
+	};
+};
+
+
+&iomuxc {
+	pinctrl_lpuart1: lpuart1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_24_LPUART1_TXD (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_AD_25_LPUART1_RXD (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+	pinctrl_leds: ledsgrp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_04_GPIO9_IO03	(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_AD_26_GPIO9_IO25	(MXRT1170_PAD_DSE)
+		>;
+	};
+	pinctrl_fec1: fec1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_32_ENET_MDC		(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_AD_33_ENET_MDIO		(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B2_02_ENET_TX_DATA00	(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_03_ENET_TX_DATA01	(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_04_ENET_TX_EN	(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_05_ENET_REF_CLK	(IMX_PAD_SION | MXRT1170_PAD_SRE | MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_06_ENET_RX_DATA00	(IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B2_07_ENET_RX_DATA01	(IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B2_08_ENET_RX_EN	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_DISP_B2_09_ENET_RX_ER	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			/* INT */
+			IOMUXC_GPIO_AD_12_GPIO9_IO11		(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+
+	pinctrl_usdhc1: usdhc1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_34_USDHC1_VSELECT	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_SD_B1_00_USDHC1_CMD		(IMX_PAD_SION | MXRT1170_PAD_PULL_UP)
+			IOMUXC_GPIO_SD_B1_01_USDHC1_CLK		(IMX_PAD_SION | MXRT1170_PAD_PULL_NO)
+			IOMUXC_GPIO_SD_B1_05_USDHC1_DATA3	(IMX_PAD_SION | MXRT1170_PAD_PULL_UP)
+			IOMUXC_GPIO_SD_B1_04_USDHC1_DATA2	(IMX_PAD_SION | MXRT1170_PAD_PULL_UP)
+			IOMUXC_GPIO_SD_B1_03_USDHC1_DATA1	(IMX_PAD_SION | MXRT1170_PAD_PULL_UP)
+			IOMUXC_GPIO_SD_B1_02_USDHC1_DATA0	(IMX_PAD_SION | MXRT1170_PAD_PULL_UP)
+		>;
+	};
+
+	pinctrl_usbotg1_id: otg1idgrp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_09_USBPHY1_OTG_ID	(IMX_PAD_SION | MXRT1170_PAD_PUE | MXRT1170_PAD_PUS)
+		>;
+	};
+
+	pinctrl_usbotg2_id: otg2idgrp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_08_USBPHY2_OTG_ID	(IMX_PAD_SION | MXRT1170_PAD_PUE | MXRT1170_PAD_PUS)
+		>;
+	};
+
+	pinctrl_flexspi1: flexspi1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_08_FLEXSPI1_A_DATA00	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_09_FLEXSPI1_A_DATA01	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_10_FLEXSPI1_A_DATA02	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_11_FLEXSPI1_A_DATA03	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+		>;
+	};
+};
+
+&iomuxc_snvs {
+	pinctrl_keys: keysgrp {
+		fsl,pins = <
+			IOMUXC_WAKEUP_DIG_GPIO13_IO00	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE | MXRT1170_PAD_PUS)
+		>;
+	};
+};
+
+&iomuxc_lpsr {
+	pinctrl_fec1_lpsr: fec1lpsrgrp {
+		fsl,pins = <
+			/* RST */
+			IOMUXC_GPIO_LPSR_12_GPIO12_IO12	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+};

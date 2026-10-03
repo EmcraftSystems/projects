@@ -1,0 +1,245 @@
+/*
+ *  (C) Copyright 2017-2023 Emcraft Systems
+ *  Vladimir Skvortsov <vskvortsov@emcraft.com>
+ *
+ *  SPDX-License-Identifier:	GPL-2.0+
+*/
+
+/dts-v1/;
+#include "imxrt1060.dtsi"
+#include "imxrt1050-pinfunc.h"
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "NXP IMXRT1060-evk board";
+	compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
+
+	chosen {
+		stdout-path = &lpuart1;
+	};
+
+	aliases {
+		gpio0 = &gpio1;
+		gpio1 = &gpio2;
+		gpio2 = &gpio3;
+		gpio3 = &gpio4;
+		gpio4 = &gpio5;
+		mmc0 = &usdhc1;
+		serial0 = &lpuart1;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80000000 0x2000000>;
+	};
+
+	reserved-memory {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                ranges;
+
+                dmapool: dmapool@81f00000 {
+                        compatible = "shared-dma-pool";
+                        reg = <0x81f00000 0x100000>;
+                        no-map;
+                        linux,dma-default;
+                };
+        };
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_keys>;
+
+		user-button {
+			label = "user-button";
+			gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_A>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds>;
+		/* disbale user-led by deafult due to pinctrl conflict with the FEC device */
+		status = "disbaled";
+
+		user-led {
+			label = "user-led";
+			gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+	};
+
+};
+
+&lpuart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&usdhc1 {
+	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+	pinctrl-0 = <&pinctrl_usdhc0>;
+	pinctrl-1 = <&pinctrl_usdhc0>;
+	pinctrl-2 = <&pinctrl_usdhc0>;
+	pinctrl-3 = <&pinctrl_usdhc0>;
+	status = "okay";
+};
+
+&fec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1050_CLK_ENET_REF>, <&clks IMXRT1050_CLK_PLL6_BYPASS>;
+	assigned-clock-rates = <50000000>;
+	assigned-clock-parents = <0>, <&clks IMXRT1050_CLK_PLL6>;
+
+	clocks = <&clks IMXRT1050_CLK_ENET>,
+		 <&clks IMXRT1050_CLK_AHB_PODF>,
+		 <&clks IMXRT1050_CLK_ENET_REF>;
+	clock-names = "ipg", "ahb", "enet_clk_ref";
+	fsl,ref-clk-dir = <&gpr 4 17 1>;
+
+	phy-mode = "rmii";
+	phy-handle = <&ethphy0>;
+	phy-reset-duration = <1>;
+	phy-reset-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy0: ethernet-phy@0 {
+			reg = <2>;
+			clocks = <&clks IMXRT1050_CLK_ENET_REF>;
+			clock-names = "rmii-ref";
+		};
+	};
+};
+
+&flexspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi>;
+	nxp-flexspi,rx-clk-loopback-from-dqs;
+	status = "okay";
+
+	is25wp064a: flash0@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <104000000>; /* There are the issues with mounting UBIFS at maximux SPI speed (RM #7497) */
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+
+		partition@0 {
+			label = "uboot";
+			reg = <0x0 0x60000>; };
+
+		partition@1 {
+			label = "uboot_env";
+			reg = <0x60000 0x20000>; };
+
+		partition@2 {
+			label = "kernel";
+			reg = <0x80000 0x400000>; };
+
+		partition@3 {
+			label = "rootfs";
+			reg = <0x480000 0x380000>; };
+	};
+};
+
+&usbotg1 {
+	dr_mode = "otg";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg1_id>;
+	status = "okay";
+	disable-over-current;
+};
+
+&usbotg2 {
+	dr_mode = "host";
+	status = "okay";
+	disable-over-current;
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl_lpuart1: lpuart1grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_12_LPUART1_TXD	MXRT10XX_PAD_CFG_UART
+			MXRT1050_IOMUXC_GPIO_AD_B0_13_LPUART1_RXD	MXRT10XX_PAD_CFG_UART
+		>;
+	};
+
+	pinctrl_usdhc0: usdhc0grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B1_12_USDHC1_CD_B		MXRT10XX_PAD_CFG_GPIO
+			MXRT1050_IOMUXC_GPIO_B1_14_USDHC1_VSELECT	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_00_USDHC1_CMD	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_01_USDHC1_CLK	MXRT10XX_PAD_CFG_SDHC_CLK
+			MXRT1050_IOMUXC_GPIO_SD_B0_05_USDHC1_DATA3	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_04_USDHC1_DATA2	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_03_USDHC1_DATA1	MXRT10XX_PAD_CFG_SDHC
+			MXRT1050_IOMUXC_GPIO_SD_B0_02_USDHC1_DATA0	MXRT10XX_PAD_CFG_SDHC
+		>;
+	};
+
+	pinctrl_fec: fecgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_B1_04_ENET_RX_DATA00	MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_05_ENET_RX_DATA01	MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_06_ENET_RX_EN		MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_B1_07_ENET_TX_DATA00	MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_08_ENET_TX_DATA01	MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_09_ENET_TX_EN		MXRT10XX_PAD_CFG_ENET_TX
+			MXRT1050_IOMUXC_GPIO_B1_10_ENET_REF_CLK		MXRT10XX_PAD_CFG_ENET_CLK_OUT
+			MXRT1050_IOMUXC_GPIO_B1_11_ENET_RX_ER		MXRT10XX_PAD_CFG_ENET_RX
+			MXRT1050_IOMUXC_GPIO_EMC_40_ENET_MDC		MXRT10XX_PAD_CFG_ENET_MDIO
+			MXRT1050_IOMUXC_GPIO_EMC_41_ENET_MDIO		MXRT10XX_PAD_CFG_ENET_MDIO
+			/* RST */
+			MXRT1050_IOMUXC_GPIO_AD_B0_09_GPIO1_IO09	MXRT10XX_PAD_CFG_GPIO
+			/* INT */
+			MXRT1050_IOMUXC_GPIO_AD_B0_10_GPIO1_IO10	MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+
+	pinctrl_leds: ledsgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_09_GPIO1_IO09	MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+
+	pinctrl_usbotg1_id: otg1idgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_01_USB_OTG1_ID	MXRT10XX_PAD_CFG_USB_OTG_ID
+		>;
+	};
+
+	pinctrl_flexspi: flexspigrp {
+		fsl,pins = <
+		MXRT1050_IOMUXC_GPIO_SD_B1_05_FLEXSPI_A_DQS		MXRT10XX_PAD_CFG_FLEXSPI_DQS
+		MXRT1050_IOMUXC_GPIO_SD_B1_06_FLEXSPI_A_SS0_B		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_07_FLEXSPI_A_SCLK		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_08_FLEXSPI_A_DATA0		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_09_FLEXSPI_A_DATA1		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_10_FLEXSPI_A_DATA2		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_11_FLEXSPI_A_DATA3		MXRT10XX_PAD_CFG_FLEXSPI
+		>;
+	};
+
+};
+
+&iomuxc_snvs {
+	pinctrl_keys: keysgrp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_SNVS_WAKEUP_GPIO5_IO00		MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+};
