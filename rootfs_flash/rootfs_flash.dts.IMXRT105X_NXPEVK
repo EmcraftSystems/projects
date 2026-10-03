@@ -63,8 +63,8 @@
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_leds>;
-		/* disbale user-led by deafult due to pinctrl conflict with the FEC device */
-		status = "disbaled";
+		/* disable user-led by default due to pinctrl conflict with the FEC device */
+		status = "disabled";
 
 		user-led {
 			label = "user-led";
