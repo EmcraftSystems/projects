@@ -1,0 +1,16 @@
+#!/bin/sh
+
+/bin/busybox --install -s
+. /etc/profile
+
+mount -a
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts -ogid=5,mode=620
+if [ -f /proc/net/dev ]; then
+	/etc/netstart.sh &
+fi
+
+# Run init.d scripts (starts inetd, which spawns dropbear per connection)
+for s in /etc/init.d/S*; do
+	[ -x "$s" ] && "$s" start
+done

@@ -1,0 +1,9 @@
+# Configuration file for fw_(printenv/setenv) utility.
+# Up to two entries are valid, in this case the redundant
+# environment sector is assumed present.
+
+# Configuration for the IMXRT1050/1060/1170-EVK (CONFIG_ENV_IS_IN_SPI_FLASH, QSPI)
+#
+# MTD device name	Device offset	Env. size	Flash sector size
+/dev/mtd1		0x0000		0x10000		0x10000
+/dev/mtd1		0x10000		0x10000		0x10000

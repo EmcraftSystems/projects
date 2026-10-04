@@ -1,0 +1,18 @@
+#For USB keyb
+#QWS_KEYBOARD="usb:/dev/input/event1"
+#export QWS_KEYBOARD
+
+#For mouse input
+#QWS_MOUSE_PROTO="IntelliMouse:/dev/input/mice"
+#export QWS_MOUSE_PROTO QWS_KEYBOARD
+
+#Alternatively, uncomment these for touch
+QWS_MOUSE_PROTO=linuxinput:/dev/input/event0
+export QWS_MOUSE_PROTO
+
+#The tslib variables
+export TSLIB_CONSOLEDEVICE=none
+export TSLIB_FBDEVICE=/dev/fb0
+export TSLIB_TSDEVICE=/dev/input/event0
+export TSLIB_CALIBFILE=/etc/pointercal
+export TSLIB_CONFFILE=/etc/ts.conf
