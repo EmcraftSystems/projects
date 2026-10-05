@@ -11,6 +11,13 @@
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/gpio/gpio.h>
 
+/*
+ * Uncomment to enable LPSPI1 with an SPI flash on its chip select 0, for
+ * example an M25P32 through a TF card adapter in J20. LPSPI1 uses the SD
+ * card's pads, so this disables usdhc1.
+ */
+/* #define SPI_FLASH_ON_LPSPI1 */
+
 / {
 	model = "NXP IMXRT1060-evk board";
 	compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
@@ -100,12 +107,16 @@
 };
 
 &usdhc1 {
+#if !defined(SPI_FLASH_ON_LPSPI1)
 	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
 	pinctrl-0 = <&pinctrl_usdhc0>;
 	pinctrl-1 = <&pinctrl_usdhc0>;
 	pinctrl-2 = <&pinctrl_usdhc0>;
 	pinctrl-3 = <&pinctrl_usdhc0>;
 	status = "okay";
+#else
+	status = "disabled";
+#endif
 };
 
 &fec {
@@ -221,6 +232,21 @@
 	};
 };
 
+#if defined(SPI_FLASH_ON_LPSPI1)
+&lpspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpspi1>;
+	status = "okay";
+	cs-gpios = <&gpio3 13 GPIO_ACTIVE_LOW>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <500000>;
+	};
+};
+#endif
+
 &iomuxc {
 	pinctrl-names = "default";
 	pinctrl_lpuart1: lpuart1grp {
@@ -322,6 +348,17 @@
 								 MXRT10XX_PAD_SRE_SLOW)
 		>;
 	};
+
+#if defined(SPI_FLASH_ON_LPSPI1)
+	pinctrl_lpspi1: lpspi1grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_SD_B0_00_LPSPI1_SCK	MXRT10XX_PAD_CFG_SPI
+			MXRT1050_IOMUXC_GPIO_SD_B0_02_LPSPI1_SDO	MXRT10XX_PAD_CFG_SPI
+			MXRT1050_IOMUXC_GPIO_SD_B0_03_LPSPI1_SDI	MXRT10XX_PAD_CFG_SPI
+			MXRT1050_IOMUXC_GPIO_SD_B0_01_GPIO3_IO13	MXRT10XX_PAD_CFG_GPIO
+		>;
+	};
+#endif
 };
 
 &iomuxc_snvs {

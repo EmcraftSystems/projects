@@ -13,6 +13,12 @@
 #include <dt-bindings/clock/imxrt1170-clock.h>
 #include "imxrt1170-pinfunc.h"
 
+/*
+ * Uncomment to enable LPSPI4 with an SPI flash on its chip select 0,
+ * for example an M25P32 wired to J1 pins 19, 21, 23 and 24.
+ */
+/* #define SPI_FLASH_ON_LPSPI4 */
+
 / {
 	model = "Avnet MaaXBoard RT";
 	compatible = "avnet,maaxboard-rt", "fsl,imxrt1170", "fsl,imxrt1050";
@@ -394,6 +400,17 @@
 							 MXRT1170_PAD_SRE)
 		>;
 	};
+
+#if defined(SPI_FLASH_ON_LPSPI4)
+	pinctrl_lpspi4: lpspi4grp {
+		fsl,pins = <
+			IOMUXC_GPIO_DISP_B2_12_LPSPI4_SCK  (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_14_LPSPI4_SOUT (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_13_LPSPI4_SIN  (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_DISP_B2_15_GPIO11_IO16 (MXRT1170_PAD_DSE)
+		>;
+	};
+#endif
 };
 
 &iomuxc_snvs {
@@ -485,3 +502,30 @@
 	/* TBD */
 	status ="disabled";
 };
+
+#if defined(SPI_FLASH_ON_LPSPI4)
+&lpspi4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpspi4>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_LPSPI4>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL3_PFD2>;
+	assigned-clock-rates = <90000000>;
+
+	cs-gpios = <&gpio11 16 GPIO_ACTIVE_LOW>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		spi-max-frequency = <10000000>;
+
+		partition@0 {
+			label = "data";
+			reg = <0x0 0x80000>;
+		};
+	};
+};
+#endif
