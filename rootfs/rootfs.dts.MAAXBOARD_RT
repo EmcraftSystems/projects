@@ -90,6 +90,13 @@
 		regulator-max-microvolt = <3300000>;
 	};
 
+	vref: regulator-vref {
+		compatible = "regulator-fixed";
+		regulator-name = "vref";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+
 	wlan_pwrseq: wlan_pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&gpio10 2 GPIO_ACTIVE_LOW>;
@@ -477,11 +484,11 @@
 };
 
 &adc1 {
-	/* TBD */
-	status ="disabled";
+	vref-supply = <&vref>;
+	status = "okay";
 };
 
 &adc2 {
-	/* TBD */
-	status ="disabled";
+	vref-supply = <&vref>;
+	status = "okay";
 };

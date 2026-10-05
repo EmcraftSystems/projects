@@ -78,6 +78,13 @@
 		};
 	};
 
+	vref: regulator-vref {
+		compatible = "regulator-fixed";
+		regulator-name = "vref";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+
 	backlight {
 		compatible = "gpio-backlight";
 		pinctrl-names = "default";
@@ -393,11 +400,11 @@
 };
 
 &adc1 {
-	/* TBD */
-	status ="disabled";
+	vref-supply = <&vref>;
+	status = "okay";
 };
 
 &adc2 {
-	/* TBD */
-	status ="disabled";
+	vref-supply = <&vref>;
+	status = "okay";
 };
