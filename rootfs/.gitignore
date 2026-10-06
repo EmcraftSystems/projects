@@ -11,3 +11,12 @@ kmod/*.mod
 kmod/*.mod.c
 kmod/Module.symvers
 kmod/modules.order
+lvgl/dl/
+lvgl/src/
+lvgl/obj/
+lvgl/liblvgl.so
+lvgl/stress
+lvgl/benchmark
+lvgl/widgets
+lvgl/music
+lvgl/ebike

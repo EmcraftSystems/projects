@@ -172,26 +172,26 @@ extern lv_obj_t * ui_Label_1;
 extern lv_obj_t * ui_Pin_Add1;
 extern lv_obj_t * ui____initial_actions0;
 
-LV_IMG_DECLARE(ui_img_ebike_bg_png);    // assets/ebike_bg.png
-LV_IMG_DECLARE(ui_img_speed_slider_png);    // assets/speed_slider.png
-LV_IMG_DECLARE(ui_img_slider_battery_png);    // assets/slider_battery.png
-LV_IMG_DECLARE(ui_img_icn_flash_png);    // assets/icn_flash.png
-LV_IMG_DECLARE(ui_img_menu_on_png);    // assets/menu_on.png
-LV_IMG_DECLARE(ui_img_icn_bike_png);    // assets/icn_bike.png
-LV_IMG_DECLARE(ui_img_icn_battery_png);    // assets/icn_battery.png
-LV_IMG_DECLARE(ui_img_icn_lock_png);    // assets/icn_lock.png
-LV_IMG_DECLARE(ui_img_menu_line_png);    // assets/menu_line.png
-LV_IMG_DECLARE(ui_img_particle_1_png);    // assets/particle_1.png
-LV_IMG_DECLARE(ui_img_water_2_png);    // assets/water_2.png
-LV_IMG_DECLARE(ui_img_particle_3_png);    // assets/particle_3.png
-LV_IMG_DECLARE(ui_img_water_1_png);    // assets/water_1.png
-LV_IMG_DECLARE(ui_img_particle_2_png);    // assets/particle_2.png
-LV_IMG_DECLARE(ui_img_battery_bg_png);    // assets/battery_bg.png
-LV_IMG_DECLARE(ui_img_icn_charge_png);    // assets/icn_charge.png
-LV_IMG_DECLARE(ui_img_pin_line_png);    // assets/pin_line.png
-LV_IMG_DECLARE(ui_img_pin_on_png);    // assets/pin_on.png
-LV_IMG_DECLARE(ui_img_icn_x_png);    // assets/icn_x.png
-LV_IMG_DECLARE(ui_img_icn_ok_png);    // assets/icn_ok.png
+LV_IMAGE_DECLARE(ui_img_ebike_bg_png);    // assets/ebike_bg.png
+LV_IMAGE_DECLARE(ui_img_speed_slider_png);    // assets/speed_slider.png
+LV_IMAGE_DECLARE(ui_img_slider_battery_png);    // assets/slider_battery.png
+LV_IMAGE_DECLARE(ui_img_icn_flash_png);    // assets/icn_flash.png
+LV_IMAGE_DECLARE(ui_img_menu_on_png);    // assets/menu_on.png
+LV_IMAGE_DECLARE(ui_img_icn_bike_png);    // assets/icn_bike.png
+LV_IMAGE_DECLARE(ui_img_icn_battery_png);    // assets/icn_battery.png
+LV_IMAGE_DECLARE(ui_img_icn_lock_png);    // assets/icn_lock.png
+LV_IMAGE_DECLARE(ui_img_menu_line_png);    // assets/menu_line.png
+LV_IMAGE_DECLARE(ui_img_particle_1_png);    // assets/particle_1.png
+LV_IMAGE_DECLARE(ui_img_water_2_png);    // assets/water_2.png
+LV_IMAGE_DECLARE(ui_img_particle_3_png);    // assets/particle_3.png
+LV_IMAGE_DECLARE(ui_img_water_1_png);    // assets/water_1.png
+LV_IMAGE_DECLARE(ui_img_particle_2_png);    // assets/particle_2.png
+LV_IMAGE_DECLARE(ui_img_battery_bg_png);    // assets/battery_bg.png
+LV_IMAGE_DECLARE(ui_img_icn_charge_png);    // assets/icn_charge.png
+LV_IMAGE_DECLARE(ui_img_pin_line_png);    // assets/pin_line.png
+LV_IMAGE_DECLARE(ui_img_pin_on_png);    // assets/pin_on.png
+LV_IMAGE_DECLARE(ui_img_icn_x_png);    // assets/icn_x.png
+LV_IMAGE_DECLARE(ui_img_icn_ok_png);    // assets/icn_ok.png
 
 LV_FONT_DECLARE(ui_font_Big);
 LV_FONT_DECLARE(ui_font_Medium);

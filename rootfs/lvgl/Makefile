@@ -1,131 +1,95 @@
 #
-# Makefile
+# LVGL demos. LVGL is downloaded from GitHub on the first build and kept
+# in dl/. liblvgl.so is the same for every board; the board-specific
+# settings are applied when the demos are linked.
 #
-ifeq ($(MCU), $(filter $(MCU), IMXRT105X_NXPEVK IMXRT106X_NXPEVK IMXRT117X_NXPEVK MAAXBOARD_RT))
 
-USE_PREBUILT_DEMOS := no
+LVGL_VERSION	:= 9.6.0
+LVGL_SHA256	:= b20ee3acc1bba13c62d854f9ebd62e4c51e0b443b1e0225892e86442defa84df
 
-BINS = stress benchmark widgets music
+DL_DIR		:= dl
+SRC_DIR		:= src
+OBJ_DIR		:= obj
+LVGL_SRC	:= $(SRC_DIR)/lvgl
+
+DEMOS		:= stress benchmark widgets music
+BINS		:= $(DEMOS)
 ifeq ($(MCU), $(filter $(MCU), IMXRT105X_NXPEVK IMXRT106X_NXPEVK))
-BINS += ebike
+BINS		+= ebike
+# Touch X and Y are swapped on the RT1050/RT1060 EVK panel
+SWAP_AXES	:= 1
+else
+SWAP_AXES	:= 0
 endif
-LVGLLIBS = liblvgl.so
 
-default: $(LVGLLIBS) $(BINS)
+CC		:= $(CROSS_COMPILE_APPS)gcc
+STRIP		:= $(CROSS_COMPILE_APPS)strip --strip-unneeded
+LV_CFLAGS	:= -I$(SRC_DIR) -I. -DLV_CONF_INCLUDE_SIMPLE \
+		   -ffunction-sections -fdata-sections -Wall
+# Our sources must not use names LVGL keeps only for compatibility
+APP_CFLAGS	:= -DLV_DISABLE_API_MAPPING -Wextra -Wno-unused-parameter
 
-ifeq ($(USE_PREBUILT_DEMOS), yes)
+all: $(LVGL_SRC)/.stamp
+	$(MAKE) build
 
-LVGL_DEMOS_DIR := $(INSTALL_ROOT)/A2F/lvgl_bins/$(MCU)
+$(LVGL_SRC)/.stamp: Makefile
+	rm -rf $(SRC_DIR)
+	mkdir -p $(DL_DIR) $(LVGL_SRC)
+	[ -f $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz ] || { \
+		wget -O $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz.tmp \
+			https://github.com/lvgl/lvgl/archive/v$(LVGL_VERSION)/lvgl-$(LVGL_VERSION).tar.gz && \
+		mv $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz.tmp $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz; }
+	echo "$(LVGL_SHA256)  $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz" | sha256sum -c -
+	tar xzf $(DL_DIR)/lvgl-$(LVGL_VERSION).tar.gz --strip-components=1 -C $(LVGL_SRC)
+	touch $@
 
-liblvgl.so: $(LVGL_DEMOS_DIR)/liblvgl.so
-	cp $< $@
+ifeq ($(MAKECMDGOALS),build)
 
-stress: $(LVGL_DEMOS_DIR)/stress
-	cp $< $@
+# Holds the MCU of the last build; rewritten, and so newer than every
+# demo binary, when the MCU changes
+MCU_STAMP := $(OBJ_DIR)/.mcu
+$(shell mkdir -p $(OBJ_DIR); [ "`cat $(MCU_STAMP) 2>/dev/null`" = "$(MCU)" ] || \
+	echo $(MCU) > $(MCU_STAMP))
 
-benchmark: $(LVGL_DEMOS_DIR)/benchmark
-	cp $< $@
+obj = $(addprefix $(OBJ_DIR)/,$(patsubst %.c,%.o,$(1)))
+srcs = $(shell find $(1) -name '*.c')
 
-widgets: $(LVGL_DEMOS_DIR)/widgets
-	cp $< $@
+LIB_OBJS	:= $(call obj,$(call srcs,$(LVGL_SRC)/src))
+# lv_demos.c holds lv_demo_args_init(), used by widgets and music
+DEMO_COMMON	:= $(LVGL_SRC)/demos/lv_demos.c
 
-music: $(LVGL_DEMOS_DIR)/music
-	cp $< $@
+build: $(BINS)
 
-ebike: $(LVGL_DEMOS_DIR)/ebike
-	cp $< $@
-
-clean:
-	rm -f $(LVGLLIBS) $(BINS)
-
-else # USE_PREBUILT_DEMOS != yes
-
-LVGL_DIR_NAME = lvgl
-LVGL_DIR = $(INSTALL_ROOT)/A2F
-LVGL_PROJECT_DIR = ${shell pwd}
-
-CC = $(CROSS_COMPILE_APPS)gcc
-CFLAGS := -Os -I$(LVGL_DIR)/$(LVGL_DIR_NAME) -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra
-
-CFLAGS += -DLV_CONF_INCLUDE_SIMPLE  -I$(LVGL_PROJECT_DIR)/$(MCU)
-
-STRIP = $(CROSS_COMPILE_APPS)strip --strip-unneeded
-
-#Collect the files to compile
-MAINSRC = ./main.c
-
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/core/lv_core.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/draw/lv_draw.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/extra/lv_extra.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/font/lv_font.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/hal/lv_hal.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/misc/lv_misc.mk
-include $(LVGL_DIR)/$(LVGL_DIR_NAME)/src/widgets/lv_widgets.mk
-include $(LVGL_DIR)/lv_drivers/lv_drivers.mk
-
-STRESSSRCS = $(shell find -L $(LVGL_DIR)/$(LVGL_DIR_NAME)/demos/stress -name "*.c")
-BENCHMARKSRCS = $(shell find -L $(LVGL_DIR)/$(LVGL_DIR_NAME)/demos/benchmark -name "*.c")
-WIDGETSSRCS = $(shell find -L $(LVGL_DIR)/$(LVGL_DIR_NAME)/demos/widgets -name "*.c")
-MUSICSRCS = $(shell find -L $(LVGL_DIR)/$(LVGL_DIR_NAME)/demos/music -name "*.c")
-EBIKESRCS = $(shell find -L $(LVGL_PROJECT_DIR)/ebike_ui -name "*.c")
-
-OBJEXT ?= .o
-
-AOBJS = $(ASRCS:.S=$(OBJEXT))
-COBJS = $(CSRCS:.c=$(OBJEXT))
-
-MAINOBJ = $(MAINSRC:.c=$(OBJEXT))
-
-SRCS = $(ASRCS) $(CSRCS)
-OBJS = $(AOBJS) $(COBJS)
-
-STRESSOBJS = $(STRESSSRCS:.c=$(OBJEXT))
-
-BENCHMARKOBJS = $(BENCHMARKSRCS:.c=$(OBJEXT))
-
-WIDGETSOBJS = $(WIDGETSSRCS:.c=$(OBJEXT))
-
-MUSICOBJS = $(MUSICSRCS:.c=$(OBJEXT))
-
-EBIKEOBJS = $(EBIKESRCS:.c=$(OBJEXT))
-
-liblvgl.so: $(AOBJS) $(COBJS)
-	$(CC) -shared -o $@ $(AOBJS) $(COBJS)
+liblvgl.so: $(LIB_OBJS)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 	$(STRIP) $@
 
-stress: $(STRESSOBJS) $(LVGLLIBS) $(MAINSRC)
-	$(CC) $(CFLAGS) -o $@ $(STRESSOBJS) -D BUILD_DEMO_STRESS $(MAINSRC) -L. -llvgl
+stress: $(call obj,$(call srcs,$(LVGL_SRC)/demos/stress))
+benchmark: $(call obj,$(DEMO_COMMON) $(call srcs,$(LVGL_SRC)/demos/benchmark $(LVGL_SRC)/demos/widgets))
+widgets: $(call obj,$(DEMO_COMMON) $(call srcs,$(LVGL_SRC)/demos/widgets))
+music: $(call obj,$(DEMO_COMMON) $(call srcs,$(LVGL_SRC)/demos/music))
+ebike: $(call obj,$(call srcs,ebike_ui))
+
+uc = $(shell echo $(1) | tr a-z A-Z)
+
+$(BINS): liblvgl.so main.c $(MCU_STAMP)
+	$(CC) $(CFLAGS) $(LV_CFLAGS) $(APP_CFLAGS) -DBUILD_DEMO_$(call uc,$@) \
+		-DEVDEV_SWAP_AXES=$(SWAP_AXES) -o $@ \
+		$(filter %.o,$^) main.c -L. -llvgl -Wl,--gc-sections $(LDFLAGS)
 	$(STRIP) $@
 
-benchmark: $(BENCHMARKOBJS) $(LVGLLIBS) $(MAINSRC)
-	$(CC) $(CFLAGS) -o $@ $(BENCHMARKOBJS) -D BUILD_DEMO_BENCHMARK $(MAINSRC) -L. -llvgl
-	$(STRIP) $@
+# Generated by SquareLine Studio, which still emits lv_obj_add_flag() and
+# lv_obj_remove_flag(), deprecated in LVGL 9.6
+$(OBJ_DIR)/ebike_ui/%.o: LV_CFLAGS += $(APP_CFLAGS) -Wno-deprecated-declarations
 
-widgets: $(WIDGETSOBJS) $(LVGLLIBS) $(MAINSRC)
-	$(CC) $(CFLAGS) -o $@ $(WIDGETSOBJS) -D BUILD_DEMO_WIDGETS $(MAINSRC) -L. -llvgl
-	$(STRIP) $@
-
-music: $(MUSICOBJS) $(LVGLLIBS) $(MAINSRC)
-	$(CC) $(CFLAGS) -o $@ $(MUSICOBJS) -D BUILD_DEMO_MUSIC $(MAINSRC) -L. -llvgl
-	$(STRIP) $@
-
-ebike: $(EBIKEOBJS) $(LVGLLIBS) $(MAINSRC)
-	$(CC) $(CFLAGS) -o $@ $(EBIKEOBJS) $(MAINSRC) -D BUILD_DEMO_EBIKE -L. -llvgl
-	$(STRIP) $@
-
-%.o: %.c $(LVGL_PROJECT_DIR)/$(MCU)/lv_conf.h $(LVGL_PROJECT_DIR)/$(MCU)/lv_drv_conf.h
-	@$(CC)  $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: %.c lv_conf.h
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(LV_CFLAGS) -c $< -o $@
 	@echo "CC $<"
 
-clean:
-	rm -f $(BINS) $(LVGLLIBS) $(AOBJS) $(COBJS) $(MAINOBJ) $(STRESSOBJS) $(MUSICOBJS) $(WIDGETSOBJS) $(BENCHMARKOBJS) $(EBIKEOBJS)
-
-endif # USE_PREBUILT_DEMOS
-
-else # MCU == IMXRT1050-EVK
-
-default:
-
 endif
 
-all: default
+clean:
+	rm -rf liblvgl.so $(DEMOS) ebike $(OBJ_DIR) $(SRC_DIR)
+
+.PHONY: all build clean

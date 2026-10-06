@@ -14,8 +14,12 @@
 
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
-#include "lv_drivers/display/fbdev.h"
-#include "lv_drivers/indev/evdev.h"
+
+#ifndef EVDEV_SWAP_AXES
+#define EVDEV_SWAP_AXES 0
+#endif
+
+uint32_t custom_tick_get(void);
 
 
 #if defined(BUILD_DEMO_EBIKE)
@@ -74,7 +78,7 @@ void update_screen(__attribute__((__unused__)) lv_timer_t * timer)
 
 	/* calculate speed */
 	pthread_mutex_lock(&button_mutex);
-	if ((now_ms - button_last_updated) < LV_DISP_DEF_REFR_PERIOD) {
+	if ((now_ms - button_last_updated) < LV_DEF_REFR_PERIOD) {
 		/* reset the accelerator is the user button has just been pressed */
 		cnt = 0;
 	}
@@ -197,41 +201,25 @@ void * button_thread (__attribute__((__unused__)) void *args)
 
 int main(void)
 {
-	uint32_t xres, yres;
+	lv_display_t *disp;
+	lv_indev_t *touch;
 
 	/* LittlevGL init */
 	lv_init();
+	lv_tick_set_cb(custom_tick_get);
 
 	/* Linux frame buffer device init */
-	fbdev_init();
+	disp = lv_linux_fbdev_create();
+	lv_linux_fbdev_set_file(disp, "/dev/fb0");
+#if !defined(BUILD_DEMO_BENCHMARK)
+	/* Enabled in lv_conf.h for the benchmark; no FPS overlay elsewhere */
+	lv_sysmon_hide_performance(disp);
+#endif
 
-	fbdev_get_sizes(&xres, &yres, NULL);
-
-	/* A small buffer for LittlevGL to draw the screen's content */
-	static lv_color_t *buf;
-	buf = malloc((xres * yres * sizeof(lv_color_t)) / 8);
-	/* Initialize a descriptor for the buffer */
-	static lv_disp_draw_buf_t disp_buf;
-	lv_disp_draw_buf_init(&disp_buf, buf, NULL, xres * yres / 8);
-
-	/* Initialize and register a display driver */
-	static lv_disp_drv_t disp_drv;
-	lv_disp_drv_init(&disp_drv);
-	disp_drv.draw_buf   = &disp_buf;
-	disp_drv.flush_cb   = fbdev_flush;
-	disp_drv.hor_res    = xres;
-	disp_drv.ver_res    = yres;
-	lv_disp_drv_register(&disp_drv);
-
-	evdev_init();
-	static lv_indev_drv_t indev_drv;
-
-	lv_indev_drv_init(&indev_drv); /* Basic initialization */
-	indev_drv.type = LV_INDEV_TYPE_POINTER;
-
-	/* This function will be called periodically (by the library) to get the mouse position and state */
-	indev_drv.read_cb = evdev_read;
-	lv_indev_drv_register(&indev_drv);
+	/* Touchscreen */
+	touch = lv_evdev_create(LV_INDEV_TYPE_POINTER, "/dev/input/event0");
+	if (touch)
+		lv_evdev_set_swap_axes(touch, EVDEV_SWAP_AXES);
 
 	/* Create a Demo */
 #if defined(BUILD_DEMO_STRESS)
@@ -260,7 +248,7 @@ int main(void)
 	}
 
 	ui_init();
-	lv_timer_create(update_screen, LV_DISP_DEF_REFR_PERIOD, NULL);
+	lv_timer_create(update_screen, LV_DEF_REFR_PERIOD, NULL);
 
 #endif
 
@@ -279,8 +267,8 @@ int main(void)
 		clock_gettime(CLOCK_MONOTONIC, &tm);
 		post_ms = ((uint64_t)tm.tv_sec * 1000) + (tm.tv_nsec / 1000000);
 
-		if (post_ms - now_ms < LV_DISP_DEF_REFR_PERIOD) {
-			  time_ms = LV_DISP_DEF_REFR_PERIOD - (post_ms - now_ms);
+		if (post_ms - now_ms < LV_DEF_REFR_PERIOD) {
+			  time_ms = LV_DEF_REFR_PERIOD - (post_ms - now_ms);
 			  usleep(time_ms * 1000);
 		}
 
@@ -289,7 +277,7 @@ int main(void)
 	return 0;
 }
 
-/* Set in lv_conf.h as `LV_TICK_CUSTOM_SYS_TIME_EXPR` */
+/* Millisecond tick source for LVGL, see lv_tick_set_cb() */
 uint32_t custom_tick_get(void)
 {
 	static uint64_t start_ms = 0;
