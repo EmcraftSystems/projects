@@ -62,8 +62,10 @@
 	};
 
 	reg_vcc_3v3_mcu: regulator {
-		/* TBD */
-		status = "disabled";
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_3v3_mcu";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
 	};
 
 	gpio-keys {
@@ -166,13 +168,15 @@
 };
 
 &adc1 {
-	/* TBD */
-	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_adc1>;
+	vref-supply = <&reg_vcc_3v3_mcu>;
+	status = "okay";
 };
 
 &adc2 {
-	/* TBD */
-	status = "disabled";
+	vref-supply = <&reg_vcc_3v3_mcu>;
+	status = "okay";
 };
 
 &lcdif {
@@ -297,6 +301,15 @@
 	pinctrl_usbotg1_id: otg1idgrp {
 		fsl,pins = <
 			MXRT1050_IOMUXC_GPIO_AD_B0_01_USB_OTG1_ID	MXRT10XX_PAD_CFG_USB_OTG_ID
+		>;
+	};
+
+	pinctrl_adc1: adc1grp {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B1_11_GPIO1_IO27	0
+			MXRT1050_IOMUXC_GPIO_AD_B1_10_GPIO1_IO26	0
+			MXRT1050_IOMUXC_GPIO_AD_B1_04_GPIO1_IO20	0
+			MXRT1050_IOMUXC_GPIO_AD_B1_05_GPIO1_IO21	0
 		>;
 	};
 
