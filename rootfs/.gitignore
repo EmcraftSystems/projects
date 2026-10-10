@@ -6,6 +6,7 @@ mpu/t2
 mpu/t3
 mpu/t4
 evtest/evtest
+spidev_flash/spidev_flash
 kmod/*.cmd
 kmod/*.mod
 kmod/*.mod.c

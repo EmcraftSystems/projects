@@ -13,6 +13,13 @@
 #include <dt-bindings/clock/imxrt1170-clock.h>
 #include "imxrt1170-pinfunc.h"
 
+/*
+ * Uncomment to enable LPSPI1 with the SPI flash on its chip select 0
+ * (an MX25L4006E on the EVK). LPSPI1_SOUT uses the backlight's pad,
+ * GPIO_AD_30, so this removes the backlight.
+ */
+/* #define SPI_FLASH_ON_LPSPI1 */
+
 / {
 	model = "NXP IMXRT1170 EVK board";
 	compatible = "nxp,imxrt1170-evk", "fsl,imxrt1170", "fsl,imxrt1050";
@@ -85,12 +92,14 @@
 		regulator-max-microvolt = <1800000>;
 	};
 
+#if !defined(SPI_FLASH_ON_LPSPI1)
 	backlight {
 		compatible = "gpio-backlight";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_backlight>;
 		gpios = <&gpio9 29 GPIO_ACTIVE_HIGH>;
 	};
+#endif
 
 	reg_lcd: regulator-lcd {
 		compatible = "regulator-fixed";
@@ -219,6 +228,33 @@
 	status = "okay";
 };
 
+#if defined(SPI_FLASH_ON_LPSPI1)
+&lpspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpspi1>;
+	status = "okay";
+
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_LPSPI1>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL3_PFD2>;
+	assigned-clock-rates = <90000000>;
+
+	cs-gpios = <&gpio9 28 GPIO_ACTIVE_LOW>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		spi-max-frequency = <10000000>;
+
+		partition@0 {
+			label = "data";
+			reg = <0x0 0x80000>;
+		};
+	};
+};
+#endif
+
 &mipi_dsi {
 	lcd_panel = "ROCKTECH-RK055AHD091";
 
@@ -344,6 +380,17 @@
 			IOMUXC_GPIO_AD_30_GPIO9_IO29		(MXRT1170_PAD_SRE | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE | MXRT1170_PAD_PUS)
 		>;
 	};
+
+#if defined(SPI_FLASH_ON_LPSPI1)
+	pinctrl_lpspi1: lpspi1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_28_LPSPI1_SCK		(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_AD_29_GPIO9_IO28		(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_AD_30_LPSPI1_SOUT		(MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_AD_31_LPSPI1_SIN		(MXRT1170_PAD_DSE)
+		>;
+	};
+#endif
 
 	pinctrl_mipi_dsi_reset: mipi_dsi_reset_grp {
 		fsl,pins = <
