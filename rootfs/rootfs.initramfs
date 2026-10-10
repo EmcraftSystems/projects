@@ -186,6 +186,7 @@ localdir /usr/lib/ts ${TARGET_ROOT}/usr/lib/ts 0 0
 ifarch IMXRT105X_NXPEVK file /etc/pointercal ${INSTALL_ROOT}/projects/${SAMPLE}/etc/pointercal.imxrt1050-evk 777 0 0
 ifarch STM32H7 file /etc/pointercal ${INSTALL_ROOT}/projects/${SAMPLE}/etc/pointercal.stm32h7-som 777 0 0
 file /usr/sbin/evtest ${INSTALL_ROOT}/projects/${SAMPLE}/evtest/evtest 777 0 0
+ifkconfig CONFIG_SPI_SPIDEV file /usr/sbin/spidev_flash ${INSTALL_ROOT}/projects/${SAMPLE}/spidev_flash/spidev_flash 777 0 0
 
 # Audio, supported on STM32F7/UCL-SOM-BSB
 ifarch STM32F7 file /usr/bin/aplay ${INSTALL_ROOT}/A2F/root/usr/bin/aplay 777 0 0
