@@ -262,6 +262,15 @@
 	};
 };
 
+&flexcan3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan3>;
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_CAN3>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL3>;
+	assigned-clock-rates = <40000000>;
+	status = "okay";
+};
+
 &iomuxc {
 	pinctrl_lpuart1: lpuart1grp {
 		fsl,pins = <
@@ -395,6 +404,13 @@
 							 MXRT1170_PAD_PUE | \
 							 MXRT1170_PAD_PUS | \
 							 MXRT1170_PAD_SRE)
+		>;
+	};
+
+	pinctrl_flexcan3: flexcan3 {
+		fsl,pins = <
+			IOMUXC_GPIO_LPSR_00_FLEXCAN3_TX  (MXRT1170_PAD_DSE)
+			IOMUXC_GPIO_LPSR_01_FLEXCAN3_RX  (MXRT1170_PAD_DSE)
 		>;
 	};
 };

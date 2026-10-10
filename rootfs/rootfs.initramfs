@@ -230,3 +230,53 @@ ifkconfig CONFIG_FB_MXS file /usr/bin/widgets_gui_demo ${INSTALL_ROOT}/projects/
 ifkconfig CONFIG_FB_MXS file /usr/bin/stress_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/stress 755 0 0
 ifkconfig CONFIG_FB_MXS ifarch IMXRT105X_NXPEVK file /usr/bin/ebike_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/ebike 755 0 0
 ifkconfig CONFIG_FB_MXS ifarch IMXRT106X_NXPEVK file /usr/bin/ebike_gui_demo ${INSTALL_ROOT}/projects/${SAMPLE}/lvgl/ebike 755 0 0
+
+# CAN
+ifkconfig CONFIG_CAN file /sbin/ip ${TARGET_ROOT}/sbin/ip 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/asc2log ${TARGET_ROOT}/usr/bin/asc2log 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/bcmserver ${TARGET_ROOT}/usr/bin/bcmserver 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/can-calc-bit-timing ${TARGET_ROOT}/usr/bin/can-calc-bit-timing 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/canbusload ${TARGET_ROOT}/usr/bin/canbusload 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/candump ${TARGET_ROOT}/usr/bin/candump 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/canfdtest ${TARGET_ROOT}/usr/bin/canfdtest 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/cangen ${TARGET_ROOT}/usr/bin/cangen 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/cangw ${TARGET_ROOT}/usr/bin/cangw 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/canlogserver ${TARGET_ROOT}/usr/bin/canlogserver 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/canplayer ${TARGET_ROOT}/usr/bin/canplayer 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/cansend ${TARGET_ROOT}/usr/bin/cansend 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/cansniffer ${TARGET_ROOT}/usr/bin/cansniffer 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotpdump ${TARGET_ROOT}/usr/bin/isotpdump 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotpperf ${TARGET_ROOT}/usr/bin/isotpperf 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotprecv ${TARGET_ROOT}/usr/bin/isotprecv 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotpsend ${TARGET_ROOT}/usr/bin/isotpsend 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotpserver ${TARGET_ROOT}/usr/bin/isotpserver 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotpsniffer ${TARGET_ROOT}/usr/bin/isotpsniffer 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/isotptun ${TARGET_ROOT}/usr/bin/isotptun 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/log2asc ${TARGET_ROOT}/usr/bin/log2asc 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/log2long ${TARGET_ROOT}/usr/bin/log2long 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/slcan_attach ${TARGET_ROOT}/usr/bin/slcan_attach 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/slcand ${TARGET_ROOT}/usr/bin/slcand 755 0 0
+ifkconfig CONFIG_CAN file /usr/bin/slcanpty ${TARGET_ROOT}/usr/bin/slcanpty 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/canecho ${TARGET_ROOT}/usr/sbin/canecho 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/gwtest ${TARGET_ROOT}/usr/sbin/gwtest 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-cycle ${TARGET_ROOT}/usr/sbin/tst-bcm-cycle 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-dump ${TARGET_ROOT}/usr/sbin/tst-bcm-dump 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcmfd-cycle ${TARGET_ROOT}/usr/sbin/tst-bcmfd-cycle 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcmfd-filter ${TARGET_ROOT}/usr/sbin/tst-bcmfd-filter 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-filter ${TARGET_ROOT}/usr/sbin/tst-bcm-filter 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-rtr ${TARGET_ROOT}/usr/sbin/tst-bcm-rtr 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-rx-sendto ${TARGET_ROOT}/usr/sbin/tst-bcm-rx-sendto 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-single ${TARGET_ROOT}/usr/sbin/tst-bcm-single 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-throttle ${TARGET_ROOT}/usr/sbin/tst-bcm-throttle 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-tx_read ${TARGET_ROOT}/usr/sbin/tst-bcm-tx_read 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-bcm-tx-sendto ${TARGET_ROOT}/usr/sbin/tst-bcm-tx-sendto 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-err ${TARGET_ROOT}/usr/sbin/tst-err 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-filter ${TARGET_ROOT}/usr/sbin/tst-filter 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-filter-master ${TARGET_ROOT}/usr/sbin/tst-filter-master 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-filter-server ${TARGET_ROOT}/usr/sbin/tst-filter-server 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-packet ${TARGET_ROOT}/usr/sbin/tst-packet 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-proc ${TARGET_ROOT}/usr/sbin/tst-proc 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-raw ${TARGET_ROOT}/usr/sbin/tst-raw 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-raw-filter ${TARGET_ROOT}/usr/sbin/tst-raw-filter 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-raw-sendto ${TARGET_ROOT}/usr/sbin/tst-raw-sendto 755 0 0
+ifkconfig CONFIG_CAN file /usr/sbin/tst-rcv-own-msgs ${TARGET_ROOT}/usr/sbin/tst-rcv-own-msgs 755 0 0

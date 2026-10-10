@@ -294,6 +294,13 @@
 		>;
 	};
 
+	pinctrl_flexcan2: flexcan2 {
+		fsl,pins = <
+			MXRT1050_IOMUXC_GPIO_AD_B0_14_FLEXCAN2_TX		MXRT10XX_PAD_CFG_FLEXCAN
+			MXRT1050_IOMUXC_GPIO_AD_B0_15_FLEXCAN2_RX		MXRT10XX_PAD_CFG_FLEXCAN
+		>;
+	};
+
 	pinctrl_lcdif: lcdifgrp {
 		fsl,pins = <
 			MXRT1050_IOMUXC_GPIO_B0_00_LCD_CLK      MXRT10XX_PAD_CFG_LCD
@@ -343,4 +350,12 @@
 			MXRT1050_IOMUXC_SNVS_WAKEUP_GPIO5_IO00		MXRT10XX_PAD_CFG_GPIO
 		>;
 	};
+};
+
+&can2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan2>;
+	assigned-clocks = <&clks IMXRT1050_CLK_CAN_SEL>;
+	assigned-clock-parents = <&clks IMXRT1050_CLK_PLL3_80M>;
+	status = "okay";
 };
