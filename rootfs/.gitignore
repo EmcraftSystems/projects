@@ -19,3 +19,10 @@ lvgl/benchmark
 lvgl/widgets
 lvgl/music
 lvgl/ebike
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/CMakeFiles/
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/CMakeCache.txt
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/Makefile
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/cmake_install.cmake
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/release/
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/debug/
+firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/output.map

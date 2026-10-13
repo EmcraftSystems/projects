@@ -9,6 +9,10 @@ ifeq ($(MCU), $(filter $(MCU), IMXRT105X_NXPEVK IMXRT106X_NXPEVK IMXRT117X_NXPEV
 CUSTOM_APPS += lvgl spidev_flash
 endif
 
+ifeq ($(MCU), $(filter $(MCU), IMXRT117X_NXPEVK MAAXBOARD_RT))
+CUSTOM_APPS += firmware/CM4
+endif
+
 # Uncomment the line below if you want to generate a tarball containing the root file system.
 # This tarball can be used in scenario booting Linux with the root filesystem on SD card.
 # FS_IMAGES	:= $(SAMPLE).tar.gz

@@ -1,0 +1,41 @@
+Cortex-M4 RPMsg ping-pong firmware for the i.MX RT1170
+=======================================================
+
+rpmsg_lite_pingpong_rtos_cm4/ is the CM4 half of the rpmsg_lite_pingpong_rtos
+example of the NXP MCUXpresso SDK 2.16.000 for the MIMXRT1170-EVK, as the SDK
+exports it as a standalone armgcc project. It is changed to run under Linux
+remoteproc:
+- no MCMGR;
+- a resource table, in the .resource_table section;
+- the vrings at 0x20236000, the end of OCRAM M4, which the rootfs device tree
+  reserves;
+- notifications over MU channel 1;
+- the debug console on LPUART7 (GPIO_AD_00/01).
+
+Linux loads it from /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf, and the
+imx_rpmsg_pingpong module talks to it:
+
+  insmod /lib/modules/imx_rpmsg_pingpong.ko
+  echo -n rpmsg_lite_pingpong_rtos_cm4.elf > /sys/class/remoteproc/remoteproc0/firmware
+  echo start > /sys/class/remoteproc/remoteproc0/state
+
+The CM4 cannot be stopped once started; reset the board to start it again.
+
+Building
+--------
+
+The rootfs project builds it for IMXRT117X_NXPEVK and MAAXBOARD_RT. "make" in
+this directory builds it alone. Both need cmake and the arm-none-eabi GCC
+toolchain with newlib, which the BSP's Docker build image provides. ARMGCC_DIR
+names the toolchain's prefix (default /usr).
+
+Licences
+--------
+
+As the SDK's SW-Content-Register gives them:
+
+- CMSIS/: Apache-2.0, in LICENSE-Apache-2.0.txt (from CMSIS 5.9.0);
+- the FreeRTOS kernel files under freertos/, and source/FreeRTOSConfig.h:
+  MIT, with the text in each file;
+- every other file, including NXP's own files under freertos/ (the CMake
+  files and freertos_tasks_c_additions.h): BSD-3-Clause, in COPYING-BSD-3.
