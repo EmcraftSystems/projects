@@ -16,6 +16,7 @@ dir /run 0755 0 0
 slink /var/run /run 777 0 0
 dir /lib 777 0 0
 dir /lib/firmware 777 0 0
+dir /lib/modules 777 0 0
 dir /bin 755 0 0
 dir /sbin 755 0 0
 dir /usr 755 0 0
@@ -46,6 +47,10 @@ slink /bin/sh busybox 777 0 0
 
 # Kernel module
 file /hello.ko ${INSTALL_ROOT}/projects/${SAMPLE}/kmod/hello.ko 777 0 0
+ifarch IMXRT117X_NXPEVK \
+ file /lib/modules/imx_rpmsg_pingpong.ko ${INSTALL_ROOT}/linux/drivers/rpmsg/imx_rpmsg_pingpong.ko 755 0 0
+ifarch MAAXBOARD_RT \
+ file /lib/modules/imx_rpmsg_pingpong.ko ${INSTALL_ROOT}/linux/drivers/rpmsg/imx_rpmsg_pingpong.ko 755 0 0
 
 # init.d scripts
 dir /etc/init.d 0755 0 0
@@ -281,3 +286,10 @@ ifkconfig CONFIG_CAN file /usr/sbin/tst-raw ${TARGET_ROOT}/usr/sbin/tst-raw 755 
 ifkconfig CONFIG_CAN file /usr/sbin/tst-raw-filter ${TARGET_ROOT}/usr/sbin/tst-raw-filter 755 0 0
 ifkconfig CONFIG_CAN file /usr/sbin/tst-raw-sendto ${TARGET_ROOT}/usr/sbin/tst-raw-sendto 755 0 0
 ifkconfig CONFIG_CAN file /usr/sbin/tst-rcv-own-msgs ${TARGET_ROOT}/usr/sbin/tst-rcv-own-msgs 755 0 0
+
+# CM4 firmware
+ifarch IMXRT117X_NXPEVK file /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/release/rpmsg_lite_pingpong_rtos_cm4.elf 755 0 0
+
+ifarch MAAXBOARD_RT file /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf \
+ ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/release/rpmsg_lite_pingpong_rtos_cm4.elf 755 0 0
