@@ -149,6 +149,14 @@
         };
 };
 
+&can1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan1>;
+	assigned-clocks = <&clks IMXRT1020_CLK_CAN_SEL>;
+	assigned-clock-parents = <&clks IMXRT1020_CLK_PLL3_80M>;
+	status = "okay";
+};
+
 &adc1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_adc1>;
@@ -210,6 +218,13 @@
 		fsl,pins = <
 			MXRT1020_IOMUXC_GPIO_AD_B1_14_LPI2C1_SCL	MXRT10XX_PAD_CFG_I2C
 			MXRT1020_IOMUXC_GPIO_AD_B1_15_LPI2C1_SDA	MXRT10XX_PAD_CFG_I2C
+		>;
+	};
+
+	pinctrl_flexcan1: flexcan1 {
+		fsl,pins = <
+			MXRT1020_IOMUXC_GPIO_SD_B1_00_FLEXCAN1_TX	MXRT10XX_PAD_CFG_FLEXCAN
+			MXRT1020_IOMUXC_GPIO_SD_B1_01_FLEXCAN1_RX	MXRT10XX_PAD_CFG_FLEXCAN
 		>;
 	};
 
