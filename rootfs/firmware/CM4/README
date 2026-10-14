@@ -10,7 +10,14 @@ remoteproc:
 - the vrings at 0x20236000, the end of OCRAM M4, which the rootfs device tree
   reserves;
 - notifications over MU channel 1;
-- the debug console on LPUART7 (GPIO_AD_00/01).
+- no debug console, and no pin muxing, so starting it changes no pad Linux
+  uses.
+
+For a debug console on LPUART7 (GPIO_AD_00/01), set DEBUG_CONSOLE_UART_INDEX
+to 7 in rpmsg_lite_pingpong_rtos_cm4/board/board.h. On the i.MX RT1170 EVK
+those pads are the touch controller's interrupt and reset, so touch stops
+working once the CM4 is started, until the board is reset. On the
+MaaXBoard-RT, what those pads connect to is not verified.
 
 Linux loads it from /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf, and the
 imx_rpmsg_pingpong module talks to it:
