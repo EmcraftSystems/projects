@@ -37,8 +37,10 @@ uint32_t BOARD_DebugConsoleSrcFreq(void)
 /* Initialize debug console. */
 void BOARD_InitDebugConsole(void)
 {
+#if DEBUG_CONSOLE_UART_INDEX != 0
     uint32_t uartClkSrcFreq = BOARD_DebugConsoleSrcFreq();
     DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, uartClkSrcFreq);
+#endif
 }
 
 #if defined(SDK_I2C_BASED_COMPONENT_USED) && SDK_I2C_BASED_COMPONENT_USED

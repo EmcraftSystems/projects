@@ -22,15 +22,17 @@
  ******************************************************************************/
 /*! @brief The board name */
 #define BOARD_NAME "MIMXRT1170-EVK"
+/* 0: no debug console */
 #ifndef DEBUG_CONSOLE_UART_INDEX
-#define DEBUG_CONSOLE_UART_INDEX 7
+#define DEBUG_CONSOLE_UART_INDEX 0
 #endif
 
 /* The UART to use for debug messages. */
 #define BOARD_DEBUG_UART_TYPE     kSerialPort_Uart
 #define BOARD_DEBUG_UART_CLK_FREQ 24000000
 
-#if DEBUG_CONSOLE_UART_INDEX == 1
+#if DEBUG_CONSOLE_UART_INDEX == 0
+#elif DEBUG_CONSOLE_UART_INDEX == 1
 #define BOARD_DEBUG_UART_BASEADDR (uint32_t) LPUART1
 #define BOARD_DEBUG_UART_INSTANCE 1U
 #define BOARD_UART_IRQ            LPUART1_IRQn
@@ -45,7 +47,6 @@
 #define BOARD_DEBUG_UART_INSTANCE 7U
 #define BOARD_UART_IRQ            LPUART7_IRQn
 #define BOARD_UART_IRQ_HANDLER    LPUART7_IRQHandler
-#elif
 #elif DEBUG_CONSOLE_UART_INDEX == 12
 #define BOARD_DEBUG_UART_BASEADDR (uint32_t) LPUART12
 #define BOARD_DEBUG_UART_INSTANCE 12U
