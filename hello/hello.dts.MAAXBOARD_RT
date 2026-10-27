@@ -1,0 +1,47 @@
+/*
+ *  (C) Copyright 2026 Emcraft Systems
+ *  Vladimir Skvortsov <vskvortsov@emcraft.com>
+ *
+ *  SPDX-License-Identifier:	GPL-2.0+
+*/
+/dts-v1/;
+
+#include "imxrt1170.dtsi"
+#include "imxrt1170-pinfunc.h"
+
+/ {
+	model = "Avnet MaaXBoard RT";
+	compatible = "avnet,maaxboard-rt", "fsl,imxrt1170", "fsl,imxrt1050";
+
+	chosen {
+		stdout-path = &lpuart1;
+	};
+
+	aliases {
+		serial0 = &lpuart1;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		linux,usable-memory = <0x80000000 0x02000000>;
+	};
+};
+
+&lpuart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&gpt1 {
+	status = "okay";
+};
+
+&iomuxc {
+	pinctrl_lpuart1: lpuart1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_AD_24_LPUART1_TXD (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+			IOMUXC_GPIO_AD_25_LPUART1_RXD (MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+};

@@ -1,0 +1,8 @@
+hello.kernel.*
+hello.uImage
+hello.dtb
+hello.initramfs.processed
+.sdk_stamp
+hello/hello
+hello/*.o
+hello/.mcu.*

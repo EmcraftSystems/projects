@@ -302,7 +302,8 @@ _buildroot_local_mk:
 	@mkdir -p $(BUILDROOT_OUTPUT)
 	@echo 'LINUX_HEADERS_OVERRIDE_SRCDIR = $(INSTALL_ROOT)/linux' > $(BUILDROOT_LOCAL_MK)
 	@echo 'BUSYBOX_OVERRIDE_SRCDIR = $(INSTALL_ROOT)/A2F/busybox' >> $(BUILDROOT_LOCAL_MK)
-	@echo 'BUSYBOX_CONFIG_FILE = $(BUILDROOT_BUSYBOX_CONFIG)' >> $(BUILDROOT_LOCAL_MK)
+	@[ ! -s $(SAMPLE).busybox ] || \
+		echo 'BUSYBOX_CONFIG_FILE = $(BUILDROOT_BUSYBOX_CONFIG)' >> $(BUILDROOT_LOCAL_MK)
 	@echo 'BT_TOOLS_OVERRIDE_SRCDIR = $(INSTALL_ROOT)/A2F/bt-tools' >> $(BUILDROOT_LOCAL_MK)
 
 BUILDROOT_DEFCONFIG_PATH := $(BUILDROOT_DIR)/configs/$(BUILDROOT_DEFCONFIG)
@@ -311,9 +312,11 @@ BUILDROOT_DEFCONFIG_MD5  := $(BUILDROOT_OUTPUT)/.defconfig_md5
 # Re-apply the defconfig only when the defconfig file itself changes
 # (md5-tracked) or on first build, so interactive edits made via
 # buildroot-menuconfig aren't clobbered. Then always invoke buildroot's
-# top-level make: it's a ~4 s no-op when nothing's stale, and it lets
-# buildroot's per-package .stamp_* files pick up state changes the
-# project make can't see (e.g. a manual <pkg>-dirclean).
+# make: it's a ~4 s no-op when nothing's stale, and it lets buildroot's
+# per-package .stamp_* files pick up state changes the project make can't
+# see (e.g. a manual <pkg>-dirclean). A project with an empty .busybox
+# builds only the toolchain target, since a full build would configure the
+# shared busybox without a project busybox config.
 _buildroot_check: _buildroot_local_mk
 	@if [ ! -x $(BUILDROOT_SENTINEL) ]; then \
 		echo "Buildroot toolchain not found. Building (this may take a while)..."; \
@@ -325,7 +328,11 @@ _buildroot_check: _buildroot_local_mk
 		$(MAKE) -C $(BUILDROOT_DIR) $(BUILDROOT_O) $(BUILDROOT_DEFCONFIG) || exit 1; \
 		md5sum $(BUILDROOT_DEFCONFIG_PATH) > $(BUILDROOT_DEFCONFIG_MD5); \
 	fi
-	@$(MAKE) -C $(BUILDROOT_DIR) $(BUILDROOT_O)
+	@if [ -s $(SAMPLE).busybox ]; then \
+		$(MAKE) -C $(BUILDROOT_DIR) $(BUILDROOT_O); \
+	else \
+		$(MAKE) -C $(BUILDROOT_DIR) $(BUILDROOT_O) toolchain; \
+	fi
 
 buildroot: _buildroot_local_mk
 	$(MAKE) -C $(BUILDROOT_DIR) $(BUILDROOT_O) $(BUILDROOT_DEFCONFIG)
