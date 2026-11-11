@@ -58,6 +58,17 @@ KERNEL_IMAGE	:= uImage
 KERNEL_DTB	:= dtb
 RFS_BUILD_DIR	:= rootfs-build-tmpdir
 
+# Flash mode: FLASHFS_TYPE is set and this MCU has a $(SAMPLE).flash.kernel
+# fragment.
+FLASH_KCONFIG	:= $(if $(FLASHFS_TYPE),$(wildcard $(SAMPLE).flash.kernel.$(MCU)))
+ifneq ($(FLASH_KCONFIG),)
+FLASH_DTS	:= $(wildcard $(SAMPLE).flash.dts.$(MCU))
+KERNEL_CONFIG	:= kernel.$(MCU).flash
+export FLASHFS_TYPE
+else
+unexport FLASHFS_TYPE
+endif
+
 # Path to the kernel modules directory in context of which
 # these loadable modules are built
 KERNELDIR	:=  $(INSTALL_ROOT)/linux
@@ -71,6 +82,9 @@ KERNEL_CFLAGS	:= -mno-fdpic
 endif
 
 FS_IMAGES_OUTPUT := $(patsubst %.initramfs,%.$(FLASHFS_TYPE),$(FS_IMAGES))
+FS_IMAGES_ALL	:= $(SAMPLE).jffs2 $(SAMPLE).ubi $(SAMPLE).ubifs
+FS_IMAGES_STALE	:= $(filter-out $(FS_IMAGES_OUTPUT) \
+		$(patsubst %.ubi,%.ubifs,$(FS_IMAGES_OUTPUT)),$(FS_IMAGES_ALL))
 
 # SDK selection stamp. Records which toolchain (legacy vs. a specific
 # buildroot defconfig) was active for the previous build of this project.
@@ -158,7 +172,7 @@ $(SAMPLE).tar.gz: $(RFS_BUILD_DIR)
 
 clean		: kclean bclean aclean
 	rm -rf $(SAMPLE).$(KERNEL_IMAGE) $(SAMPLE).$(KERNEL_DTB) \
-		$(FS_IMAGES_OUTPUT) $(SAMPLE).ubifs \
+		$(FS_IMAGES_OUTPUT) $(FS_IMAGES_ALL) \
 		$(RFS_BUILD_DIR) $(SDK_STAMP)
 
 kclean		:
@@ -196,11 +210,25 @@ defconfig	:
 	cp -f $(KERNEL_DEFCONFIG) \
 		$(INSTALL_ROOT)/linux/arch/$(ARCH)/configs/
 	$(MAKE) -C $(INSTALL_ROOT)/linux $(KERNEL_DEFCONFIG)
+ifneq ($(FLASH_KCONFIG),)
+	cd $(INSTALL_ROOT)/linux && \
+		scripts/kconfig/merge_config.sh -m .config $(CURDIR)/$(FLASH_KCONFIG)
+	$(MAKE) -C $(INSTALL_ROOT)/linux olddefconfig
+	@grep -E '^(# )?CONFIG_' $(FLASH_KCONFIG) | while read -r l; do \
+		grep -qxF "$$l" $(INSTALL_ROOT)/linux/.config || { \
+			echo "ERROR: $(FLASH_KCONFIG): '$$l' did not take effect" >&2; \
+			exit 1; }; \
+	done
+endif
 	cp -f $(INSTALL_ROOT)/linux/.config \
 			./$(SAMPLE).$(KERNEL_CONFIG)
 	rm $(INSTALL_ROOT)/linux/arch/$(ARCH)/configs/$(KERNEL_DEFCONFIG)
 
 savedefconfig	:
+ifneq ($(FLASH_KCONFIG),)
+	@echo "ERROR: savedefconfig would write the flash-mode config into" \
+		"$(KERNEL_DEFCONFIG); run it without FLASHFS_TYPE" >&2; exit 1
+endif
 	$(MAKE) -C $(INSTALL_ROOT)/linux savedefconfig
 	cp $(INSTALL_ROOT)/linux/defconfig $(KERNEL_DEFCONFIG)
 
@@ -239,8 +267,12 @@ busybox		: $(SAMPLE).busybox
 	 CROSS_COMPILE= $(MAKE) -C $(INSTALL_ROOT)/A2F/busybox)
 endif
 
-dtb		: $(SAMPLE).$(KERNEL_DTS)
+dtb		: $(SAMPLE).$(KERNEL_DTS) $(FLASH_DTS)
+ifneq ($(FLASH_DTS),)
+	cat $(SAMPLE).$(KERNEL_DTS) $(FLASH_DTS) > $(KERNEL_DTS_PATH)/$(MCU)-SOM.dts
+else
 	cp -f $(SAMPLE).$(KERNEL_DTS) $(KERNEL_DTS_PATH)/$(MCU)-SOM.dts
+endif
 	cp -f $(SAMPLE).$(KERNEL_CONFIG) $(INSTALL_ROOT)/linux/.config
 	$(MAKE) -C $(INSTALL_ROOT)/linux $(DTS_SUBDIR)$(MCU)-SOM.dtb
 
@@ -264,12 +296,13 @@ endif
 $(KERNEL_DEFCONFIG):
 	[ ! -e "$(KERNEL_DEFCONFIG)" ] && $(MAKE) savedefconfig
 
-%.$(KERNEL_CONFIG): $(KERNEL_DEFCONFIG)
+%.$(KERNEL_CONFIG): $(KERNEL_DEFCONFIG) $(FLASH_KCONFIG)
 	$(MAKE) defconfig
 
 %.$(KERNEL_IMAGE) : \
 	%.$(KERNEL_CONFIG) %.$(RAMFS_CONFIG) %.$(KERNEL_DTS) \
 	$(CUSTOM_APPS) $(XIP_CUSTOM_APPS) busybox $(DTB)
+	rm -f $(FS_IMAGES_STALE)
 	SAMPLE=$(SAMPLE) ../rfs-builder.py generate-rfs-image $(SAMPLE).$(RAMFS_CONFIG) \
 		1 > $(SAMPLE).$(RAMFS_CONFIG).processed
 	rm -f $(INSTALL_ROOT)/linux/initramfs-list-min
@@ -367,7 +400,9 @@ clone		:
 		${KERNEL_DTS} \
 		${KERNEL_LD} \
 		${RAMFS_CONFIG} \
-		${BUSYBOX_CONFIG}; do \
+		${BUSYBOX_CONFIG} \
+		flash.kernel.${MCU} \
+		flash.dts.${MCU}; do \
 		[ -e $(INSTALL_ROOT)/projects/${new}/${SAMPLE}.$$i ] && \
 		mv $(INSTALL_ROOT)/projects/${new}/${SAMPLE}.$$i \
 			$(INSTALL_ROOT)/projects/${new}/${new}.$$i; \

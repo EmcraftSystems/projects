@@ -1,0 +1,48 @@
+&flexspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi1>;
+	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_FLEXSPI1>;
+	assigned-clock-parents = <&clks IMXRT1170_CLK_PLL2_PFD2>;
+	nxp-flexspi,rx-clk-loopback-from-dqs;
+	status = "okay";
+
+	flash0: is25wp128@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <104000000>;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+
+		partition@0 {
+			label = "uboot";
+			reg = <0x0 0x60000>; };
+
+		partition@1 {
+			label = "uboot_env";
+			reg = <0x60000 0x20000>; };
+
+		partition@2 {
+			label = "kernel";
+			reg = <0x80000 0x800000>; };
+
+		partition@3 {
+			label = "rootfs";
+			reg = <0x880000 0x780000>; };
+	};
+};
+
+&iomuxc {
+	pinctrl_flexspi1: flexspi1grp {
+		fsl,pins = <
+			IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_08_FLEXSPI1_A_DATA00	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_09_FLEXSPI1_A_DATA01	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_10_FLEXSPI1_A_DATA02	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+			IOMUXC_GPIO_SD_B2_11_FLEXSPI1_A_DATA03	(IMX_PAD_SION | MXRT1170_PAD_PULL_DOWN | MXRT1170_PAD_PDRV)
+		>;
+	};
+};

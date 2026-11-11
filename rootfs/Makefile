@@ -50,4 +50,32 @@ endif
 #    instead of a panic -- the worse failure on a board whose only channel is a
 #    serial console. The bounded form waits, then panics, and says so.
 
+# Root filesystem in QSPI or HyperFlash instead of an initramfs:
+#     make FLASHFS_TYPE=jffs2      (or ubi)
+# builds rootfs.uImage without the initramfs, and rootfs.jffs2 (or rootfs.ubi)
+# from rootfs.initramfs, on the boards that have a rootfs.flash.kernel.<MCU>.
+ifdef FLASHFS_TYPE
+ifeq ($(filter $(FLASHFS_TYPE),jffs2 ubi),)
+$(error FLASHFS_TYPE must be jffs2 or ubi, not '$(FLASHFS_TYPE)')
+endif
+ifeq ($(wildcard $(SAMPLE).flash.kernel.$(MCU)),)
+$(error $(MCU) has no flash build mode: $(SAMPLE).flash.kernel.$(MCU) is missing)
+endif
+
+FS_IMAGES	:= $(SAMPLE).initramfs
+
+ifeq ($(MCU), $(filter $(MCU), IMXRT105X_NXPEVK IMXRT106X_NXPEVK))
+MKFSUBIFS_FLAGS	:= -U -m 8 -e 65408 -c 52 -R 64KiB
+UBINIZE_FLAGS	:= -m 64 -p 64KiB
+endif
+ifeq ($(MCU),IMXRT117X_NXPEVK)
+MKFSUBIFS_FLAGS	:= -U -m 8 -e 65408 -c 116 -R 64KiB
+UBINIZE_FLAGS	:= -m 64 -p 64KiB
+endif
+ifeq ($(MCU),MAAXBOARD_RT)
+MKFSUBIFS_FLAGS	:= -U -m 1 -e 262016 -c 72 -R 256KiB
+UBINIZE_FLAGS	:= -m 1 -p 256KiB
+endif
+endif
+
 include ../Rules.make

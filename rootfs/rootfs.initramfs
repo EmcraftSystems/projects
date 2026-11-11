@@ -293,3 +293,6 @@ ifarch IMXRT117X_NXPEVK file /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf \
 
 ifarch MAAXBOARD_RT file /lib/firmware/rpmsg_lite_pingpong_rtos_cm4.elf \
  ${INSTALL_ROOT}/projects/${SAMPLE}/firmware/CM4/rpmsg_lite_pingpong_rtos_cm4/release/rpmsg_lite_pingpong_rtos_cm4.elf 755 0 0
+ifdef FLASHFS_TYPE ifarch IMXRT105X_NXPEVK file /etc/fw_env.config ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.qspi 644 0 0
+ifdef FLASHFS_TYPE ifarch IMXRT106X_NXPEVK file /etc/fw_env.config ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.qspi 644 0 0
+ifdef FLASHFS_TYPE ifarch IMXRT117X_NXPEVK file /etc/fw_env.config ${INSTALL_ROOT}/projects/${SAMPLE}/etc/fw_env.config.qspi 644 0 0
