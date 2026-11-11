@@ -65,7 +65,7 @@ endif
 FS_IMAGES	:= $(SAMPLE).initramfs
 
 ifeq ($(MCU), $(filter $(MCU), IMXRT105X_NXPEVK IMXRT106X_NXPEVK))
-MKFSUBIFS_FLAGS	:= -U -m 8 -e 65408 -c 41 -R 64KiB
+MKFSUBIFS_FLAGS	:= -U -m 8 -e 65408 -c 52 -R 64KiB
 UBINIZE_FLAGS	:= -m 64 -p 64KiB
 endif
 ifeq ($(MCU),IMXRT117X_NXPEVK)
