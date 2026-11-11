@@ -1,0 +1,20 @@
+# This is a minimalistic initramfs
+dir /dev 0755 0 0
+nod /dev/console 0600 0 0 c 5 1
+
+dir /bin 755 0 0
+dir /proc 755 0 0
+
+# FDPIC program loader. The application is linked -static, so libuClibc
+# itself is not needed, but the loader still applies the FDPIC fixups.
+dir /lib 755 0 0
+dir /usr 755 0 0
+dir /usr/lib 755 0 0
+file /lib/ld-uClibc-1.0.47.so ${TARGET_ROOT}/lib/ld-uClibc-1.0.47.so 755 0 0
+slink /lib/ld-uClibc.so.0 ld-uClibc.so.1 755 0 0
+slink /lib/ld-uClibc.so.1 ld-uClibc-1.0.47.so 755 0 0
+slink /usr/lib/ld.so.1 /lib/ld-uClibc.so.0 755 0 0
+
+# Application
+file /bin/hello ${INSTALL_ROOT}/projects/${SAMPLE}/hello/hello 755 0 0
+slink /init /bin/hello 777 0 0

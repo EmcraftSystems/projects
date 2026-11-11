@@ -1,0 +1,47 @@
+/*
+ *  (C) Copyright 2026 Emcraft Systems
+ *  Vladimir Skvortsov <vskvortsov@emcraft.com>
+ *
+ *  SPDX-License-Identifier:	GPL-2.0+
+*/
+/dts-v1/;
+
+#include "imxrt1020.dtsi"
+#include "imxrt1020-pinfunc.h"
+
+/ {
+	model = "NXP IMXRT1024 EVK board";
+	compatible = "nxp,imxrt1024-evk", "fsl,imxrt1020";
+
+	chosen {
+		stdout-path = &lpuart1;
+	};
+
+	aliases {
+		serial0 = &lpuart1;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80000000 0x02000000>;
+	};
+};
+
+&lpuart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&gpt {
+	status = "okay";
+};
+
+&iomuxc {
+	pinctrl_lpuart1: lpuart1grp {
+		fsl,pins = <
+			MXRT1020_IOMUXC_GPIO_AD_B0_06_LPUART1_TX	MXRT10XX_PAD_CFG_UART
+			MXRT1020_IOMUXC_GPIO_AD_B0_07_LPUART1_RX	MXRT10XX_PAD_CFG_UART
+		>;
+	};
+};
