@@ -253,11 +253,11 @@ ifkconfig CONFIG_CAN file /usr/bin/cansend ${TARGET_ROOT}/usr/bin/cansend 755 0 
 ifkconfig CONFIG_CAN file /usr/bin/cansniffer ${TARGET_ROOT}/usr/bin/cansniffer 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/isotpdump ${TARGET_ROOT}/usr/bin/isotpdump 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/isotpperf ${TARGET_ROOT}/usr/bin/isotpperf 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/isotprecv ${TARGET_ROOT}/usr/bin/isotprecv 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/isotpsend ${TARGET_ROOT}/usr/bin/isotpsend 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/isotpserver ${TARGET_ROOT}/usr/bin/isotpserver 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/isotpsniffer ${TARGET_ROOT}/usr/bin/isotpsniffer 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/isotptun ${TARGET_ROOT}/usr/bin/isotptun 755 0 0
+ifkconfig CONFIG_CAN_ISOTP file /usr/bin/isotprecv ${TARGET_ROOT}/usr/bin/isotprecv 755 0 0
+ifkconfig CONFIG_CAN_ISOTP file /usr/bin/isotpsend ${TARGET_ROOT}/usr/bin/isotpsend 755 0 0
+ifkconfig CONFIG_CAN_ISOTP file /usr/bin/isotpserver ${TARGET_ROOT}/usr/bin/isotpserver 755 0 0
+ifkconfig CONFIG_CAN_ISOTP file /usr/bin/isotpsniffer ${TARGET_ROOT}/usr/bin/isotpsniffer 755 0 0
+ifkconfig CONFIG_TUN file /usr/bin/isotptun ${TARGET_ROOT}/usr/bin/isotptun 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/log2asc ${TARGET_ROOT}/usr/bin/log2asc 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/log2long ${TARGET_ROOT}/usr/bin/log2long 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/slcan_attach ${TARGET_ROOT}/usr/bin/slcan_attach 755 0 0
