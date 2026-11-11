@@ -169,8 +169,10 @@
 };
 
 &fec1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_fec1>, <&pinctrl_fec1_lpsr>;
+	/* U-Boot selects "ksz8081" on the original EVK, which has a KSZ8081 PHY */
+	pinctrl-names = "default", "ksz8081";
+	pinctrl-0 = <&pinctrl_fec1>, <&pinctrl_fec1_ref_clk>, <&pinctrl_fec1_lpsr>;
+	pinctrl-1 = <&pinctrl_fec1>, <&pinctrl_fec1_ref_clk_ksz8081>, <&pinctrl_fec1_lpsr>;
 	status = "okay";
 
 	assigned-clocks = <&clks IMXRT1170_CLK_ROOT_ENET1>;
@@ -363,13 +365,22 @@
 			IOMUXC_GPIO_DISP_B2_02_ENET_TX_DATA00	(MXRT1170_PAD_DSE)
 			IOMUXC_GPIO_DISP_B2_03_ENET_TX_DATA01	(MXRT1170_PAD_DSE)
 			IOMUXC_GPIO_DISP_B2_04_ENET_TX_EN	(MXRT1170_PAD_DSE)
-			IOMUXC_GPIO_DISP_B2_05_ENET_REF_CLK	(IMX_PAD_SION | MXRT1170_PAD_DSE)
 			IOMUXC_GPIO_DISP_B2_06_ENET_RX_DATA00	(IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 			IOMUXC_GPIO_DISP_B2_07_ENET_RX_DATA01	(IMX_PAD_SION | MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 			IOMUXC_GPIO_DISP_B2_08_ENET_RX_EN	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 			IOMUXC_GPIO_DISP_B2_09_ENET_RX_ER	(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
 			/* INT */
 			IOMUXC_GPIO_AD_12_GPIO9_IO11		(MXRT1170_PAD_DSE | MXRT1170_PAD_PUE)
+		>;
+	};
+	pinctrl_fec1_ref_clk: fec1refclkgrp {
+		fsl,pins = <
+			IOMUXC_GPIO_DISP_B2_05_ENET_REF_CLK	(IMX_PAD_SION | MXRT1170_PAD_DSE)
+		>;
+	};
+	pinctrl_fec1_ref_clk_ksz8081: fec1refclkksz8081grp {
+		fsl,pins = <
+			IOMUXC_GPIO_DISP_B2_05_ENET_REF_CLK	(IMX_PAD_SION | MXRT1170_PAD_SRE | MXRT1170_PAD_DSE)
 		>;
 	};
 	pinctrl_fec_1g: fec1ggrp {
