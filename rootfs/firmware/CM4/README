@@ -11,7 +11,9 @@ remoteproc:
   reserves;
 - notifications over MU channel 1;
 - no debug console, and no pin muxing, so starting it changes no pad Linux
-  uses.
+  uses;
+- built with DISABLE_WDOG=0 (flags.cmake), so its SystemInit leaves WDOG1,
+  WDOG2, RTWDOG3 and RTWDOG4 as Linux set them.
 
 For a debug console on LPUART7 (GPIO_AD_00/01), set DEBUG_CONSOLE_UART_INDEX
 to 7 in rpmsg_lite_pingpong_rtos_cm4/board/board.h. On the i.MX RT1170 EVK

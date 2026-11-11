@@ -36,6 +36,7 @@ SET(CMAKE_C_FLAGS_DEBUG " \
     -DFLEXSPI_IN_USE \
     -DMCUXPRESSO_SDK \
     -DMULTICORE_APP=1 \
+    -DDISABLE_WDOG=0 \
     -DSDK_OS_FREE_RTOS \
     -g \
     -O0 \
@@ -61,6 +62,7 @@ SET(CMAKE_C_FLAGS_RELEASE " \
     -DFLEXSPI_IN_USE \
     -DMCUXPRESSO_SDK \
     -DMULTICORE_APP=1 \
+    -DDISABLE_WDOG=0 \
     -DSDK_OS_FREE_RTOS \
     -Os \
     -mcpu=cortex-m4 \
