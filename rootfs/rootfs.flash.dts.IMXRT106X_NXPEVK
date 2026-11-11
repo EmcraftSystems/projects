@@ -1,0 +1,46 @@
+&flexspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi>;
+	nxp-flexspi,rx-clk-loopback-from-dqs;
+	status = "okay";
+
+	is25wp064a: flash0@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <104000000>;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+
+		partition@0 {
+			label = "uboot";
+			reg = <0x0 0x60000>; };
+
+		partition@1 {
+			label = "uboot_env";
+			reg = <0x60000 0x20000>; };
+
+		partition@2 {
+			label = "kernel";
+			reg = <0x80000 0x400000>; };
+
+		partition@3 {
+			label = "rootfs";
+			reg = <0x480000 0x380000>; };
+	};
+};
+
+&iomuxc {
+	pinctrl_flexspi: flexspigrp {
+		fsl,pins = <
+		MXRT1050_IOMUXC_GPIO_SD_B1_05_FLEXSPI_A_DQS		MXRT10XX_PAD_CFG_FLEXSPI_DQS
+		MXRT1050_IOMUXC_GPIO_SD_B1_06_FLEXSPI_A_SS0_B		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_07_FLEXSPI_A_SCLK		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_08_FLEXSPI_A_DATA0		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_09_FLEXSPI_A_DATA1		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_10_FLEXSPI_A_DATA2		MXRT10XX_PAD_CFG_FLEXSPI
+		MXRT1050_IOMUXC_GPIO_SD_B1_11_FLEXSPI_A_DATA3		MXRT10XX_PAD_CFG_FLEXSPI
+		>;
+	};
+};
