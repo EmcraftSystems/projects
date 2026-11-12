@@ -318,7 +318,7 @@
 	status = "okay";
 
 	eeprom0: eeprom0@58 {
-		compatible = "at,24c256";
+		compatible = "atmel,24c256";
 		reg = <0x58>;
 		status = "disabled";
 	};
