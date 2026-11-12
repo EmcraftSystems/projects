@@ -260,8 +260,8 @@ ifkconfig CONFIG_CAN_ISOTP file /usr/bin/isotpsniffer ${TARGET_ROOT}/usr/bin/iso
 ifkconfig CONFIG_TUN file /usr/bin/isotptun ${TARGET_ROOT}/usr/bin/isotptun 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/log2asc ${TARGET_ROOT}/usr/bin/log2asc 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/log2long ${TARGET_ROOT}/usr/bin/log2long 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/slcan_attach ${TARGET_ROOT}/usr/bin/slcan_attach 755 0 0
-ifkconfig CONFIG_CAN file /usr/bin/slcand ${TARGET_ROOT}/usr/bin/slcand 755 0 0
+ifkconfig CONFIG_CAN_SLCAN file /usr/bin/slcan_attach ${TARGET_ROOT}/usr/bin/slcan_attach 755 0 0
+ifkconfig CONFIG_CAN_SLCAN file /usr/bin/slcand ${TARGET_ROOT}/usr/bin/slcand 755 0 0
 ifkconfig CONFIG_CAN file /usr/bin/slcanpty ${TARGET_ROOT}/usr/bin/slcanpty 755 0 0
 ifkconfig CONFIG_CAN file /usr/sbin/canecho ${TARGET_ROOT}/usr/sbin/canecho 755 0 0
 ifkconfig CONFIG_CAN file /usr/sbin/gwtest ${TARGET_ROOT}/usr/sbin/gwtest 755 0 0
