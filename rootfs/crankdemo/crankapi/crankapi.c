@@ -3,7 +3,7 @@
  *
  * For more information email info@cranksoftware.com.
  *
- * Example for handling GREIO events from GAPP aplication.
+ * Example for handling GREIO events from GAPP application.
  * Copyright 2017, Emcraft Systems.
  */
 

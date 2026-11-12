@@ -224,7 +224,7 @@ def generate_rfs_image(file_list):
             names2lines[fn] = len(rfs_items) - 1
             dirs.append(fn)
 
-    # the most recent reference to file (node, slink) substitues the previous one
+    # the most recent reference to file (node, slink) substitutes the previous one
     def add_file(fn, linenum, line_txt):
         if fn in names2lines:
             rfs_items[names2lines[fn]] = ("# dup of %i: " % (linenum + 1)) + \

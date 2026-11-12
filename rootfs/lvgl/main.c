@@ -97,7 +97,7 @@ void update_screen(__attribute__((__unused__)) lv_timer_t * timer)
 	cnt ++;
 	pthread_mutex_unlock(&button_mutex);
 
-	/* update the odometer, trip etc. lables */
+	/* update the odometer, trip etc. labels */
 	if (prev_ms != 0 && speed > 0) {
 		if (speed_prev == 0 || trip >= (trip_max)) {
 			trip = 0;
@@ -145,7 +145,7 @@ void update_screen(__attribute__((__unused__)) lv_timer_t * timer)
 	}
 
 
-	/* update the battery lable as per the corresponding slider value */
+	/* update the battery label as per the corresponding slider value */
 	bat = lv_slider_get_value(ui_Slider_Battery);
 
 	if (bat != bat_prev) {
