@@ -228,7 +228,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		ethphy1: ethernet-phy@1 {
+		ethphy1: ethernet-phy@0 {
 			reg = <0>;
 			clocks = <&clks IMXRT1170_CLK_ENET2>;
 			clock-names = "rmii-ref";
