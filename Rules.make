@@ -132,6 +132,7 @@ _do_modules	: _prepare_modules
 endif
 
 _prepare_modules: $(SAMPLE).$(KERNEL_CONFIG)
+	rm -f $(INSTALL_ROOT)/linux/initramfs-list-min
 	cp -f $(INSTALL_ROOT)/linux/initramfs-list-min.stub \
 		$(INSTALL_ROOT)/linux/initramfs-list-min
 	rm -f $(INSTALL_ROOT)/linux/usr/initramfs_data.cpio \
